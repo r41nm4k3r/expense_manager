@@ -36,6 +36,8 @@ dependencies:
   flutter_slidable: ^0.6.0 # For sliding actions
   charts_flutter: ^0.12.0 # For data visualization
   fl_chart: ^0.69.2
+  csv: ^5.0.1
+  path_provider: ^2.0.12
 
 
 

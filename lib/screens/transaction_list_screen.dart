@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'edit_transaction_screen.dart'; // Import the new EditTransactionScreen
-import 'package:intl/intl.dart'; // Import the intl package for date formatting
+import 'dart:io';
+import 'package:csv/csv.dart'; // For CSV export
+import 'package:path_provider/path_provider.dart'; // For file storage
+import 'package:intl/intl.dart'; // For date formatting
+import 'edit_transaction_screen.dart';
 
 class TransactionListScreen extends StatefulWidget {
   const TransactionListScreen({super.key});
@@ -32,6 +35,36 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     });
   }
 
+  Future<void> _exportToCSV() async {
+    List<List<String>> csvData = [
+      // Add headers
+      ['Category', 'Type', 'Amount', 'Date'],
+      // Add rows
+      ..._transactions.map((transaction) => [
+            transaction['category'] ?? 'Unknown',
+            transaction['type'] ?? 'Unknown',
+            transaction['amount']?.toString() ?? '0.00',
+            transaction['date'] ?? 'N/A',
+          ])
+    ];
+
+    String csvString = const ListToCsvConverter().convert(csvData);
+
+    // Use getApplicationDocumentsDirectory instead of getExternalStorageDirectory
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/transactions.csv';
+
+    // Write to file
+    final file = File(filePath);
+    await file.writeAsString(csvString);
+
+    // Show success message
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Exported to $filePath'),
+      duration: const Duration(seconds: 3),
+    ));
+  }
+
   void _editTransaction(int index) async {
     final transaction = _transactions[index];
     final updatedTransaction = await Navigator.push(
@@ -46,58 +79,55 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         _transactions[index] = updatedTransaction;
       });
 
-      // Save the updated transaction to SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('transactions', json.encode(_transactions));
     }
   }
 
   void _deleteTransaction(int index) async {
-    setState(() {
-      _transactions.removeAt(index);
-    });
-
-    // Update SharedPreferences after deletion
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('transactions', json.encode(_transactions));
-  }
-
-  void _showDeleteConfirmationDialog(int index) {
-    showDialog(
+    final confirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Transaction'),
+        title: const Text('Confirm Delete'),
         content:
             const Text('Are you sure you want to delete this transaction?'),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
+            onPressed: () => Navigator.of(context).pop(false),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-              _deleteTransaction(index); // Delete the transaction
-            },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
-            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
           ),
         ],
       ),
     );
+
+    if (confirmed == true) {
+      setState(() {
+        _transactions.removeAt(index);
+      });
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('transactions', json.encode(_transactions));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Transaction List')),
+      appBar: AppBar(
+        title: const Text('Transaction List'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: _exportToCSV,
+          ),
+        ],
+      ),
       body: Column(
         children: [
-          // Transaction list
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -107,15 +137,12 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                         itemCount: _transactions.length,
                         itemBuilder: (context, index) {
                           final transaction = _transactions[index];
-
-                          // Use null-aware operators to ensure values are valid
                           final category = transaction['category'] ?? 'Unknown';
                           final type = transaction['type'] ?? 'Unknown';
                           final amount =
                               transaction['amount']?.toString() ?? '0.00';
                           final date = transaction['date'] ?? 'N/A';
 
-                          // Format the date using intl package
                           final DateTime transactionDate = DateTime.parse(date);
                           final String formattedDate =
                               DateFormat('dd-MM-yyyy').format(transactionDate);
@@ -140,7 +167,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    formattedDate, // Display formatted date
+                                    formattedDate,
                                     style: const TextStyle(
                                         color: Colors.grey, fontSize: 12),
                                   ),
@@ -156,8 +183,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                                       IconButton(
                                         icon: const Icon(Icons.delete),
                                         onPressed: () =>
-                                            _showDeleteConfirmationDialog(
-                                                index),
+                                            _deleteTransaction(index),
                                       ),
                                     ],
                                   ),
@@ -168,7 +194,6 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                         },
                       ),
           ),
-          // Footer section
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(

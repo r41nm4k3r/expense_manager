@@ -26,7 +26,7 @@ For large lists of transactions, implement lazy loading or pagination to improve
     Use ListView.builder with ScrollController to detect when the user scrolls to the end.
     Load more transactions dynamically or display transactions in pages.
 
-4. Add Export to CSV/Excel
+4. Add Export to CSV/Excel :white_check_mark:
 
 Enable users to export their transactions to a CSV or Excel file for external use.
 
