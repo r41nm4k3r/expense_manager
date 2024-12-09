@@ -85,3 +85,7 @@ Enable multiple user profiles for shared devices:
 
     Let users log in and maintain separate transaction data.
     Store profiles locally using SharedPreferences or in the cloud using Firebase.
+
+13. Add Pyament method :white_check_mark:
+
+Give user the option to choose between cash or card as payment ,ethod. Implement also in the transaction list.
