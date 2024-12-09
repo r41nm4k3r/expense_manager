@@ -153,6 +153,34 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               onPressed: _saveTransaction,
               child: const Text('Save Transaction'),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Made with ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.flutter_dash,
+                      color: Colors.blue,
+                      size: 20,
+                    ),
+                    Text(
+                      ' and ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

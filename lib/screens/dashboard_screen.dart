@@ -346,8 +346,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return AlertDialog(
           title: Text('About Expense Manager'),
           content: Text(
-            'Expense Manager is a simple app to track your income and expenses.\n\nMade with Flutter and ❤ !',
-            style: TextStyle(fontSize: 16),
+            'Expense Manager is a simple app to track your income and expenses.\n\nMade with Flutter and ❤️ !',
+            style: TextStyle(fontFamily: 'NotoEmoji', fontSize: 16),
           ),
           actions: <Widget>[
             TextButton(
