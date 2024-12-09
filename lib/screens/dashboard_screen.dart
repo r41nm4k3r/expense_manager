@@ -47,6 +47,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('About Expense Manager'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Expense Manager v1.0\n\nA simple and intuitive app to manage your finances effectively. Track your income and expenses to maintain control over your budget.',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.credit_card, size: 32, color: Colors.blue),
+                  SizedBox(width: 8),
+                  Icon(Icons.attach_money, size: 32, color: Colors.green),
+                  SizedBox(width: 8),
+                  Icon(Icons.analytics, size: 32, color: Colors.purple),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _openMenu() {
     showModalBottomSheet(
       context: context,
@@ -91,6 +130,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               title: Text('About'),
               onTap: () {
                 Navigator.pop(context);
+                _showAboutDialog();
               },
             ),
           ],
