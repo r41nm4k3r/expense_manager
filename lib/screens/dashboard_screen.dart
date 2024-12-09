@@ -45,6 +45,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     double income = 0.0;
     double expense = 0.0;
 
+    // Reset category amounts before recalculating
+    for (var category in _categoryDetails) {
+      category['amount'] = 0.0; // Reset category amounts
+    }
+
     // Calculate totals for income, expense, and categories
     for (var transaction in transactions) {
       if (transaction['type'] == 'Income') {

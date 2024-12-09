@@ -42,16 +42,22 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                   itemCount: _transactions.length,
                   itemBuilder: (context, index) {
                     final transaction = _transactions[index];
+                    // Use null-aware operators to ensure values are valid
+                    final category = transaction['category'] ?? 'Unknown';
+                    final type = transaction['type'] ?? 'Unknown';
+                    final amount = transaction['amount']?.toString() ?? '0.00';
+                    final date = transaction['date'] ?? 'N/A';
+
                     return ListTile(
                       title: Text(
-                        transaction['category'],
+                        category,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text(
-                          'Type: ${transaction['type']}, Amount: \$${transaction['amount']}'),
+                      subtitle: Text('Type: $type, Amount: \$${amount}'),
                       trailing: Text(
-                        transaction['date'],
-                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        date,
+                        style:
+                            const TextStyle(color: Colors.grey, fontSize: 12),
                       ),
                     );
                   },
