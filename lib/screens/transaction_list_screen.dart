@@ -66,70 +66,115 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Transaction List')),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _transactions.isEmpty
-              ? const Center(child: Text('No transactions added yet!'))
-              : ListView.builder(
-                  itemCount: _transactions.length,
-                  itemBuilder: (context, index) {
-                    final transaction = _transactions[index];
+      body: Column(
+        children: [
+          // Transaction list
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _transactions.isEmpty
+                    ? const Center(child: Text('No transactions added yet!'))
+                    : ListView.builder(
+                        itemCount: _transactions.length,
+                        itemBuilder: (context, index) {
+                          final transaction = _transactions[index];
 
-                    // Use null-aware operators to ensure values are valid
-                    final category = transaction['category'] ?? 'Unknown';
-                    final type = transaction['type'] ?? 'Unknown';
-                    final amount = transaction['amount']?.toString() ?? '0.00';
-                    final date = transaction['date'] ?? 'N/A';
+                          // Use null-aware operators to ensure values are valid
+                          final category = transaction['category'] ?? 'Unknown';
+                          final type = transaction['type'] ?? 'Unknown';
+                          final amount =
+                              transaction['amount']?.toString() ?? '0.00';
+                          final date = transaction['date'] ?? 'N/A';
 
-                    // Format the date using intl package
-                    final DateTime transactionDate = DateTime.parse(date);
-                    final String formattedDate =
-                        DateFormat('dd-MM-yyyy').format(transactionDate);
+                          // Format the date using intl package
+                          final DateTime transactionDate = DateTime.parse(date);
+                          final String formattedDate =
+                              DateFormat('dd-MM-yyyy').format(transactionDate);
 
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 16),
-                      elevation: 5,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              category,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 16),
+                            elevation: 5,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    category,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    'Type: $type, Amount: \$${amount}',
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    formattedDate, // Display formatted date
+                                    style: const TextStyle(
+                                        color: Colors.grey, fontSize: 12),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.edit),
+                                        onPressed: () =>
+                                            _editTransaction(index),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete),
+                                        onPressed: () =>
+                                            _deleteTransaction(index),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Type: $type, Amount: \$${amount}',
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              formattedDate, // Display formatted date
-                              style: const TextStyle(
-                                  color: Colors.grey, fontSize: 12),
-                            ),
-                            SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () => _editTransaction(index),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () => _deleteTransaction(index),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
+          ),
+          // Footer section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Made with ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.flutter_dash,
+                      color: Colors.blue,
+                      size: 20,
+                    ),
+                    Text(
+                      ' and ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 20,
+                    ),
+                  ],
                 ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
