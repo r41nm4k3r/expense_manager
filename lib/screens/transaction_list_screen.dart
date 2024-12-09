@@ -30,6 +30,22 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     });
   }
 
+  void _editTransaction(int index) {
+    // Edit logic (e.g., open a new screen with the transaction details)
+    final transaction = _transactions[index];
+    print('Editing transaction: $transaction');
+  }
+
+  void _deleteTransaction(int index) async {
+    setState(() {
+      _transactions.removeAt(index);
+    });
+
+    // Update SharedPreferences after deletion
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('transactions', json.encode(_transactions));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,22 +58,44 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                   itemCount: _transactions.length,
                   itemBuilder: (context, index) {
                     final transaction = _transactions[index];
+
                     // Use null-aware operators to ensure values are valid
                     final category = transaction['category'] ?? 'Unknown';
                     final type = transaction['type'] ?? 'Unknown';
                     final amount = transaction['amount']?.toString() ?? '0.00';
                     final date = transaction['date'] ?? 'N/A';
 
-                    return ListTile(
-                      title: Text(
-                        category,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text('Type: $type, Amount: \$${amount}'),
-                      trailing: Text(
-                        date,
-                        style:
-                            const TextStyle(color: Colors.grey, fontSize: 12),
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
+                      elevation: 5,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(16),
+                        title: Text(
+                          category,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          'Type: $type, Amount: \$${amount}',
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () => _editTransaction(index),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () => _deleteTransaction(index),
+                            ),
+                          ],
+                        ),
+                        isThreeLine: true,
+                        onTap: () {
+                          // You could navigate to an edit screen here if needed
+                          print('Tapped on transaction: $transaction');
+                        },
                       ),
                     );
                   },
