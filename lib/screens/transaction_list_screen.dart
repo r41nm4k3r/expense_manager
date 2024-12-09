@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'edit_transaction_screen.dart'; // Import the new EditTransactionScreen
 
 class TransactionListScreen extends StatefulWidget {
   const TransactionListScreen({super.key});
@@ -30,10 +31,24 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     });
   }
 
-  void _editTransaction(int index) {
-    // Edit logic (e.g., open a new screen with the transaction details)
+  void _editTransaction(int index) async {
     final transaction = _transactions[index];
-    print('Editing transaction: $transaction');
+    final updatedTransaction = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditTransactionScreen(transaction: transaction),
+      ),
+    );
+
+    if (updatedTransaction != null) {
+      setState(() {
+        _transactions[index] = updatedTransaction;
+      });
+
+      // Save the updated transaction to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('transactions', json.encode(_transactions));
+    }
   }
 
   void _deleteTransaction(int index) async {
@@ -93,7 +108,6 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                         ),
                         isThreeLine: true,
                         onTap: () {
-                          // You could navigate to an edit screen here if needed
                           print('Tapped on transaction: $transaction');
                         },
                       ),
