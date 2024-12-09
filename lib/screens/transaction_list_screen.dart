@@ -226,6 +226,11 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                                     style: const TextStyle(
                                         color: Colors.grey, fontSize: 12),
                                   ),
+                                  Text(
+                                    'Payment Method: ${transaction['paymentMethod'] ?? 'Unknown'}',
+                                    style: const TextStyle(
+                                        color: Colors.grey, fontSize: 12),
+                                  ),
                                   SizedBox(height: 4),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,

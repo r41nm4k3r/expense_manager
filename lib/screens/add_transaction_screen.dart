@@ -12,7 +12,8 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   // Default values
   String _selectedCategory = 'Food';
-  String _transactionType = 'Expense'; // Default transaction type
+  String _transactionType = 'Income'; // Default transaction type
+  String _paymentMethod = "Cash"; // Default payment method
   final _amountController = TextEditingController();
   final List<String> _categories = ['Food', 'Transport', 'Salary', 'Other'];
 
@@ -38,6 +39,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       'type': _transactionType,
       'category': _selectedCategory,
       'amount': double.parse(amount),
+      'paymentMethod': _paymentMethod, // Save payment method
       'date': DateTime.now().toString(),
     };
 
@@ -145,6 +147,24 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 hintText: 'Enter amount',
                 border: OutlineInputBorder(),
               ),
+            ),
+            const SizedBox(height: 16),
+
+            // Payment Method Dropdown
+            DropdownButtonFormField<String>(
+              value: _paymentMethod,
+              onChanged: (String? value) {
+                setState(() {
+                  _paymentMethod = value!;
+                });
+              },
+              items: ['Cash', 'Card']
+                  .map((method) => DropdownMenuItem<String>(
+                        value: method,
+                        child: Text(method),
+                      ))
+                  .toList(),
+              decoration: const InputDecoration(labelText: 'Payment Method'),
             ),
             const SizedBox(height: 16),
 
