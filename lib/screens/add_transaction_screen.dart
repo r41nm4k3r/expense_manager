@@ -54,7 +54,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       const SnackBar(content: Text('Transaction added successfully!')),
     );
 
-    Navigator.pop(context);
+    Navigator.pop(context); // Go back after saving
   }
 
   @override
@@ -62,6 +62,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Transaction'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: () {
+              _showHelpDialog(); // Show help dialog
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -148,6 +156,30 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showHelpDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Help'),
+          content: const Text(
+            'Here you can add either an Income or Expense transaction. Select the transaction type, choose a category, '
+            'enter the amount, and then click "Save Transaction". Your transaction will be saved for future tracking.',
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the help dialog
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

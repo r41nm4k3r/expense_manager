@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:fl_chart/fl_chart.dart'; // Import FLChart package
 import '../main.dart'; // Import the main.dart to access the global theme control
 
 class DashboardScreen extends StatefulWidget {
@@ -12,7 +12,17 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   double _totalIncome = 0.0;
   double _totalExpense = 0.0;
-  Map<String, double> _categoryData = {};
+  List<Map<String, dynamic>> _categories = [
+    {'name': 'Income', 'amount': 0.0, 'color': Colors.green},
+    {'name': 'Expense', 'amount': 0.0, 'color': Colors.red},
+  ];
+  List<Map<String, dynamic>> _categoryDetails = [
+    {'name': 'Groceries', 'amount': 0.0, 'color': Colors.blue},
+    {'name': 'Utilities', 'amount': 0.0, 'color': Colors.orange},
+    {'name': 'Entertainment', 'amount': 0.0, 'color': Colors.purple},
+    {'name': 'Salary', 'amount': 0.0, 'color': Colors.green},
+    {'name': 'Investment', 'amount': 0.0, 'color': Colors.teal},
+  ];
 
   @override
   void initState() {
@@ -34,62 +44,193 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     double income = 0.0;
     double expense = 0.0;
-    Map<String, double> categoryData = {};
 
+    // Calculate totals for income, expense, and categories
     for (var transaction in transactions) {
       if (transaction['type'] == 'Income') {
         income += transaction['amount'];
       } else if (transaction['type'] == 'Expense') {
         expense += transaction['amount'];
-        final category = transaction['category'] ?? 'Other';
-        categoryData[category] =
-            (categoryData[category] ?? 0) + transaction['amount'];
+        // Add to the category total
+        for (var category in _categoryDetails) {
+          if (category['name'] == transaction['category']) {
+            category['amount'] += transaction['amount'];
+          }
+        }
       }
     }
 
     setState(() {
       _totalIncome = income;
       _totalExpense = expense;
-      _categoryData = categoryData;
+      _categories[0]['amount'] = income;
+      _categories[1]['amount'] = expense;
     });
   }
 
-  void _showAboutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('About Expense Manager'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Expense Manager v1.0\n\nA simple and intuitive app to manage your finances effectively. Track your income and expenses to maintain control over your budget.',
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.credit_card, size: 32, color: Colors.blue),
-                  SizedBox(width: 8),
-                  Icon(Icons.attach_money, size: 32, color: Colors.green),
-                  SizedBox(width: 8),
-                  Icon(Icons.analytics, size: 32, color: Colors.purple),
-                ],
-              ),
-            ],
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Expense Manager',
+          style: TextStyle(fontSize: 24),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: () {
+              final currentTheme = Theme.of(context).brightness;
+              MyApp.state.setTheme(
+                currentTheme == Brightness.dark
+                    ? ThemeMode.light
+                    : ThemeMode.dark,
+              );
+            },
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text('Close'),
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: _openMenu,
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Welcome to Expense Manager!',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 26,
+                  ),
+            ),
+            SizedBox(height: 20),
+            // Both charts side by side in the same card
+            Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Pie chart for income vs expense
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 200,
+                      child: PieChart(
+                        PieChartData(
+                          sectionsSpace: 0,
+                          centerSpaceRadius: 0,
+                          sections: [
+                            PieChartSectionData(
+                              color: _categories[0]['color'],
+                              value: _totalIncome,
+                              title: 'Income',
+                              radius: 50,
+                              titleStyle: TextStyle(color: Colors.white),
+                            ),
+                            PieChartSectionData(
+                              color: _categories[1]['color'],
+                              value: _totalExpense,
+                              title: 'Expense',
+                              radius: 50,
+                              titleStyle: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Pie chart for categories
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 200,
+                      child: PieChart(
+                        PieChartData(
+                          sectionsSpace: 0,
+                          centerSpaceRadius: 0,
+                          sections: _categoryDetails.map((category) {
+                            return PieChartSectionData(
+                              color: category['color'],
+                              value: category['amount'],
+                              title: category['name'],
+                              radius: 50,
+                              titleStyle: TextStyle(color: Colors.white),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Card(
+              elevation: 4,
+              child: ListTile(
+                title: Text('Total Balance',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text(
+                  '\$${(_totalIncome - _totalExpense).toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Card(
+              elevation: 4,
+              child: ListTile(
+                title: Text('Total Income',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text(
+                  '\$${_totalIncome.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 20, color: Colors.green),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Card(
+              elevation: 4,
+              child: ListTile(
+                title: Text('Total Expense',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text(
+                  '\$${_totalExpense.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 20, color: Colors.red),
+                ),
+              ),
+            ),
+            SizedBox(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/add-transaction')
+                        .then((_) => _calculateTotals());
+                  },
+                  icon: Icon(Icons.add),
+                  label: Text('Add Transaction'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/transaction-list')
+                        .then((_) => _calculateTotals());
+                  },
+                  icon: Icon(Icons.list),
+                  label: Text('View Transactions'),
+                ),
+              ],
             ),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -147,127 +288,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  List<PieChartSectionData> _generatePieChartData() {
-    final List<Color> categoryColors = [
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-      Colors.red,
-    ];
-    final keys = _categoryData.keys.toList();
-    return _categoryData.entries.map((entry) {
-      final index = keys.indexOf(entry.key) % categoryColors.length;
-      return PieChartSectionData(
-        value: entry.value,
-        title: '${entry.key}\n${entry.value.toStringAsFixed(0)}',
-        color: categoryColors[index],
-        radius: 50,
-        titleStyle: TextStyle(fontSize: 12, color: Colors.white),
-      );
-    }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Expense Manager',
-          style: TextStyle(fontSize: 24),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Theme.of(context).brightness == Brightness.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () {
-              final currentTheme = Theme.of(context).brightness;
-              MyApp.state.setTheme(
-                currentTheme == Brightness.dark
-                    ? ThemeMode.light
-                    : ThemeMode.dark,
-              );
-            },
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('About Expense Manager'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Expense Manager v1.0\n\nA simple and intuitive app to manage your finances effectively. Track your income and expenses to maintain control over your budget.',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.credit_card, size: 32, color: Colors.blue),
+                  SizedBox(width: 8),
+                  Icon(Icons.attach_money, size: 32, color: Colors.green),
+                  SizedBox(width: 8),
+                  Icon(Icons.analytics, size: 32, color: Colors.purple),
+                ],
+              ),
+            ],
           ),
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: _openMenu,
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome to Expense Manager!',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26,
-                  ),
-            ),
-            SizedBox(height: 20),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                title: Text('Total Balance',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(
-                  '\$${(_totalIncome - _totalExpense).toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                title: Text('Total Income',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(
-                  '\$${_totalIncome.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 20, color: Colors.green),
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                title: Text('Total Expense',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(
-                  '\$${_totalExpense.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 20, color: Colors.red),
-                ),
-              ),
-            ),
-            SizedBox(height: 32),
-            Text(
-              'Expense Breakdown',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Expanded(
-              child: Center(
-                child: _categoryData.isEmpty
-                    ? Text('No Data Available')
-                    : PieChart(
-                        PieChartData(
-                          sections: _generatePieChartData(),
-                          borderData: FlBorderData(show: false),
-                          sectionsSpace: 2,
-                          centerSpaceRadius: 40,
-                        ),
-                      ),
-              ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Close'),
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
