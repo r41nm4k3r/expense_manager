@@ -62,6 +62,35 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     await prefs.setString('transactions', json.encode(_transactions));
   }
 
+  void _showDeleteConfirmationDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Transaction'),
+        content:
+            const Text('Are you sure you want to delete this transaction?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+              _deleteTransaction(index); // Delete the transaction
+            },
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,7 +156,8 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                                       IconButton(
                                         icon: const Icon(Icons.delete),
                                         onPressed: () =>
-                                            _deleteTransaction(index),
+                                            _showDeleteConfirmationDialog(
+                                                index),
                                       ),
                                     ],
                                   ),
