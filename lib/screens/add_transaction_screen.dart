@@ -10,12 +10,12 @@ class AddTransactionScreen extends StatefulWidget {
 }
 
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
-  // Default values
   String _selectedCategory = 'Food';
   String _transactionType = 'Income'; // Default transaction type
   String _paymentMethod = "Cash"; // Default payment method
   final _amountController = TextEditingController();
   final List<String> _categories = ['Food', 'Transport', 'Salary', 'Other'];
+  DateTime? _selectedDate; // Store the selected date
 
   @override
   void dispose() {
@@ -27,20 +27,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final prefs = await SharedPreferences.getInstance();
     final String amount = _amountController.text;
 
-    if (amount.isEmpty) {
+    if (amount.isEmpty || _selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter an amount')),
+        const SnackBar(content: Text('Please enter all details')),
       );
       return;
     }
 
-    // New transaction object
     final Map<String, dynamic> transaction = {
       'type': _transactionType,
       'category': _selectedCategory,
       'amount': double.parse(amount),
-      'paymentMethod': _paymentMethod, // Save payment method
-      'date': DateTime.now().toString(),
+      'paymentMethod': _paymentMethod,
+      'date': _selectedDate!.toIso8601String(), // Save selected date
     };
 
     // Fetch existing transactions
@@ -57,6 +56,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
 
     Navigator.pop(context); // Go back after saving
+  }
+
+  void _pickDate() async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    }
   }
 
   @override
@@ -168,38 +181,32 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             ),
             const SizedBox(height: 16),
 
+            // Date Picker
+            const Text(
+              'Date',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _selectedDate == null
+                        ? 'No date selected'
+                        : 'Selected Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _pickDate,
+                  child: const Text('Pick Date'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
             // Save Button
             ElevatedButton(
               onPressed: _saveTransaction,
               child: const Text('Save Transaction'),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Made with ',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Icon(
-                      Icons.flutter_dash,
-                      color: Colors.blue,
-                      size: 20,
-                    ),
-                    Text(
-                      ' and ',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
             ),
           ],
         ),
@@ -215,7 +222,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           title: const Text('Help'),
           content: const Text(
             'Here you can add either an Income or Expense transaction. Select the transaction type, choose a category, '
-            'enter the amount, and then click "Save Transaction". Your transaction will be saved for future tracking.',
+            'enter the amount, pick a date, and then click "Save Transaction". Your transaction will be saved for future tracking.',
             textAlign: TextAlign.center,
           ),
           actions: [
