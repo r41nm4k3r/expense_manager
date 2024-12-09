@@ -48,7 +48,7 @@ Allow users to select multiple transactions and delete them in bulk.
     Use checkboxes in each transaction card to enable selection.
     Add a delete button that operates on selected transactions.
 
-7. Add Dark Mode Toggle - [x]
+- [x] 7. Add Dark Mode Toggle
 
 Make the app theme dynamic and toggle between light and dark modes.
 
