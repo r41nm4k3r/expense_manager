@@ -314,7 +314,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     .then((_) => _calculateTotals());
               },
             ),
-            // New Settings menu item
+            // Settings menu item
             ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
@@ -323,14 +323,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.pushNamed(context, '/settings');
               },
             ),
-            // New About menu item
+            // About menu item, now with pop-up
             ListTile(
               leading: Icon(Icons.info),
               title: Text('About'),
               onTap: () {
                 Navigator.pop(context); // Close the menu
-                Navigator.pushNamed(context, '/about');
+                _showAboutDialog(); // Show the about pop-up
               },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to show the About dialog
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('About Expense Manager'),
+          content: Text(
+            'Expense Manager is a simple app to track your income and expenses.\n\nMade with Flutter and ❤ !',
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Close'),
             ),
           ],
         );
