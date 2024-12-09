@@ -3,7 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; // For JSON encoding/decoding
 
 class AddTransactionScreen extends StatefulWidget {
-  const AddTransactionScreen({super.key});
+  final Map<String, dynamic>? transaction;
+  final int? transactionIndex;
+
+  const AddTransactionScreen(
+      {super.key, this.transaction, this.transactionIndex});
 
   @override
   _AddTransactionScreenState createState() => _AddTransactionScreenState();
@@ -12,10 +16,25 @@ class AddTransactionScreen extends StatefulWidget {
 class _AddTransactionScreenState extends State<AddTransactionScreen> {
   String _selectedCategory = 'Food';
   String _transactionType = 'Income'; // Default transaction type
-  String _paymentMethod = "Cash"; // Default payment method
+  String _paymentMethod = 'Cash'; // Default payment method
   final _amountController = TextEditingController();
   final List<String> _categories = ['Food', 'Transport', 'Salary', 'Other'];
   DateTime? _selectedDate; // Store the selected date
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.transaction != null) {
+      // Initialize fields with existing transaction data if available
+      final transaction = widget.transaction!;
+      _transactionType = transaction['type'] ?? 'Income';
+      _selectedCategory = transaction['category'] ?? 'Food';
+      _paymentMethod = transaction['paymentMethod'] ?? 'Cash';
+      _amountController.text = transaction['amount']?.toString() ?? '';
+      _selectedDate =
+          DateTime.tryParse(transaction['date'] ?? '') ?? DateTime.now();
+    }
+  }
 
   @override
   void dispose() {
@@ -47,12 +66,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     List<dynamic> transactions =
         existingTransactions != null ? json.decode(existingTransactions) : [];
 
-    // Add new transaction and save back
-    transactions.add(transaction);
+    // If editing, replace the existing transaction
+    if (widget.transactionIndex != null) {
+      transactions[widget.transactionIndex!] = transaction;
+    } else {
+      // Add new transaction
+      transactions.add(transaction);
+    }
+
     await prefs.setString('transactions', json.encode(transactions));
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Transaction added successfully!')),
+      const SnackBar(content: Text('Transaction saved successfully!')),
     );
 
     Navigator.pop(context); // Go back after saving
@@ -76,7 +101,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Transaction'),
+        title: Text(widget.transaction != null
+            ? 'Edit Transaction'
+            : 'Add Transaction'),
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
@@ -88,127 +115,131 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Transaction Type
-            const Text(
-              'Transaction Type',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile(
-                    title: const Text('Income'),
-                    value: 'Income',
-                    groupValue: _transactionType,
-                    onChanged: (value) {
-                      setState(() {
-                        _transactionType = value!;
-                      });
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: RadioListTile(
-                    title: const Text('Expense'),
-                    value: 'Expense',
-                    groupValue: _transactionType,
-                    onChanged: (value) {
-                      setState(() {
-                        _transactionType = value!;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Category Dropdown
-            const Text(
-              'Category',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            DropdownButton<String>(
-              value: _selectedCategory,
-              isExpanded: true,
-              items: _categories.map((category) {
-                return DropdownMenuItem(
-                  value: category,
-                  child: Text(category),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedCategory = value!;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-
-            // Amount Input
-            const Text(
-              'Amount',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                hintText: 'Enter amount',
-                border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Transaction Type
+              const Text(
+                'Transaction Type',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Payment Method Dropdown
-            DropdownButtonFormField<String>(
-              value: _paymentMethod,
-              onChanged: (String? value) {
-                setState(() {
-                  _paymentMethod = value!;
-                });
-              },
-              items: ['Cash', 'Card']
-                  .map((method) => DropdownMenuItem<String>(
-                        value: method,
-                        child: Text(method),
-                      ))
-                  .toList(),
-              decoration: const InputDecoration(labelText: 'Payment Method'),
-            ),
-            const SizedBox(height: 16),
-
-            // Date Picker
-            const Text(
-              'Date',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _selectedDate == null
-                        ? 'No date selected'
-                        : 'Selected Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile(
+                      title: const Text('Income'),
+                      value: 'Income',
+                      groupValue: _transactionType,
+                      onChanged: (value) {
+                        setState(() {
+                          _transactionType = value!;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _pickDate,
-                  child: const Text('Pick Date'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+                  Expanded(
+                    child: RadioListTile(
+                      title: const Text('Expense'),
+                      value: 'Expense',
+                      groupValue: _transactionType,
+                      onChanged: (value) {
+                        setState(() {
+                          _transactionType = value!;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
 
-            // Save Button
-            ElevatedButton(
-              onPressed: _saveTransaction,
-              child: const Text('Save Transaction'),
-            ),
-          ],
+              // Category Dropdown
+              const Text(
+                'Category',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              DropdownButton<String>(
+                value: _selectedCategory,
+                isExpanded: true,
+                items: _categories.map((category) {
+                  return DropdownMenuItem(
+                    value: category,
+                    child: Text(category),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCategory = value!;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Amount Input
+              const Text(
+                'Amount',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: 'Enter amount',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Payment Method Dropdown
+              DropdownButtonFormField<String>(
+                value: _paymentMethod,
+                onChanged: (String? value) {
+                  setState(() {
+                    _paymentMethod = value!;
+                  });
+                },
+                items: ['Cash', 'Card', 'Online']
+                    .map((method) => DropdownMenuItem<String>(
+                          value: method,
+                          child: Text(method),
+                        ))
+                    .toList(),
+                decoration: const InputDecoration(labelText: 'Payment Method'),
+              ),
+              const SizedBox(height: 16),
+
+              // Date Picker
+              const Text(
+                'Date',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _selectedDate == null
+                          ? 'No date selected'
+                          : 'Selected Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _pickDate,
+                    child: const Text('Pick Date'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Save Button
+              ElevatedButton(
+                onPressed: _saveTransaction,
+                child: Text(widget.transaction != null
+                    ? 'Save Changes'
+                    : 'Save Transaction'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -221,8 +252,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         return AlertDialog(
           title: const Text('Help'),
           content: const Text(
-            'Here you can add either an Income or Expense transaction. Select the transaction type, choose a category, '
-            'enter the amount, pick a date, and then click "Save Transaction". Your transaction will be saved for future tracking.',
+            'Here you can add or edit a transaction. Select the transaction type, choose a category, enter the amount, pick a date, and then click "Save Transaction". Your transaction will be saved for future tracking.',
             textAlign: TextAlign.center,
           ),
           actions: [
