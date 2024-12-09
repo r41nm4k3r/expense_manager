@@ -28,7 +28,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     if (amount.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter an amount')),
+        const SnackBar(content: Text('Please enter an amount')),
       );
       return;
     }
@@ -51,7 +51,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     await prefs.setString('transactions', json.encode(transactions));
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Transaction added successfully!')),
+      const SnackBar(content: Text('Transaction added successfully!')),
     );
 
     Navigator.pop(context);

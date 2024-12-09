@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/transaction_list_screen.dart';
-import 'screens/add_transaction_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import './screens/dashboard_screen.dart';
+import './screens/add_transaction_screen.dart';
+import './screens/transaction_list_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  static final GlobalKey<_MyAppState> globalKey = GlobalKey();
-
-  MyApp() : super(key: globalKey);
-
-  static _MyAppState get state => globalKey.currentState!;
+  static late _MyAppState state;
 
   @override
-  _MyAppState createState() => _MyAppState();
+  _MyAppState createState() {
+    state = _MyAppState();
+    return state;
+  }
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode _themeMode = ThemeMode.light;
 
-  void setTheme(ThemeMode themeMode) {
+  void setTheme(ThemeMode mode) {
     setState(() {
-      _themeMode = themeMode;
+      _themeMode = mode;
     });
   }
 
@@ -31,15 +32,17 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Expense Manager',
-      theme: ThemeData.light().copyWith(
-        primaryColor: Colors.blue,
-        appBarTheme: AppBarTheme(color: Colors.blue),
+      debugShowCheckedModeBanner: false, // Disable the debug banner
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
       ),
-      darkTheme: ThemeData.dark().copyWith(
-        primaryColor: Colors.black,
-        appBarTheme: AppBarTheme(color: Colors.black),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
       ),
-      themeMode: _themeMode, // Toggles light and dark modes
+      themeMode: _themeMode,
+      initialRoute: '/',
       routes: {
         '/': (context) => DashboardScreen(),
         '/add-transaction': (context) => AddTransactionScreen(),

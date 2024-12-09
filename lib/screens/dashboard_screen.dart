@@ -15,6 +15,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _calculateTotals());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _calculateTotals();
   }
 
@@ -41,6 +47,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  void _openMenu() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('About'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +90,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   : Icons.dark_mode,
             ),
             onPressed: () {
-              // Use the global key to switch themes
               final currentTheme = Theme.of(context).brightness;
               MyApp.state.setTheme(
                 currentTheme == Brightness.dark
@@ -66,6 +98,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               );
             },
           ),
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: _openMenu,
+          ),
         ],
       ),
       body: Padding(
@@ -73,7 +109,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Text(
               'Welcome to Expense Manager!',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -82,7 +117,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
             ),
             SizedBox(height: 20),
-            // Financial Summary
             Card(
               elevation: 4,
               child: ListTile(
@@ -119,20 +153,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             SizedBox(height: 32),
-            // Action Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/add-transaction');
+                    Navigator.pushNamed(context, '/add-transaction')
+                        .then((_) => _calculateTotals());
                   },
                   icon: Icon(Icons.add),
                   label: Text('Add Transaction'),
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/transaction-list');
+                    Navigator.pushNamed(context, '/transaction-list')
+                        .then((_) => _calculateTotals());
                   },
                   icon: Icon(Icons.list),
                   label: Text('View Transactions'),

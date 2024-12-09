@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class TransactionListScreen extends StatefulWidget {
+  const TransactionListScreen({super.key});
+
   @override
   _TransactionListScreenState createState() => _TransactionListScreenState();
 }
@@ -31,11 +33,11 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Transaction List')),
+      appBar: AppBar(title: const Text('Transaction List')),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _transactions.isEmpty
-              ? Center(child: Text('No transactions added yet!'))
+              ? const Center(child: Text('No transactions added yet!'))
               : ListView.builder(
                   itemCount: _transactions.length,
                   itemBuilder: (context, index) {
@@ -43,13 +45,13 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                     return ListTile(
                       title: Text(
                         transaction['category'],
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                           'Type: ${transaction['type']}, Amount: \$${transaction['amount']}'),
                       trailing: Text(
                         transaction['date'],
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                        style: const TextStyle(color: Colors.grey, fontSize: 12),
                       ),
                     );
                   },
