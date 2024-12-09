@@ -55,6 +55,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Dashboard'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.add),
+              title: Text('Add Transaction'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/add-transaction')
+                    .then((_) => _calculateTotals());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list),
+              title: Text('Transaction List'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/transaction-list')
+                    .then((_) => _calculateTotals());
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
               onTap: () {
