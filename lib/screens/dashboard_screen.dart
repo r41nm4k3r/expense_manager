@@ -24,6 +24,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     {'name': 'Investment', 'amount': 0.0, 'color': Colors.teal},
   ];
 
+  final String logoPath = 'assets/images/logo.png'; // Path to your logo
+
   @override
   void initState() {
     super.initState();
@@ -77,9 +79,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Expense Manager',
-          style: TextStyle(fontSize: 24),
+        title: Row(
+          children: [
+            // Logo Image in the AppBar
+            Image.asset(
+              logoPath,
+              width: 30, // Adjust the size of the logo
+              height: 30, // Adjust the size of the logo
+            ),
+            SizedBox(width: 8), // Space between logo and title
+            Text(
+              'Expense Manager',
+              style: TextStyle(fontSize: 24),
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -233,6 +246,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ],
             ),
+            SizedBox(height: 16), // Add some space before the footer
+            // Footer Section with Text and Icons
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Made with ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.flutter_dash,
+                      color: Colors.blue,
+                      size: 20,
+                    ),
+                    Text(
+                      ' and ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -271,60 +314,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     .then((_) => _calculateTotals());
               },
             ),
+            // New Settings menu item
             ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(context); // Close the menu
                 Navigator.pushNamed(context, '/settings');
               },
             ),
+            // New About menu item
             ListTile(
               leading: Icon(Icons.info),
               title: Text('About'),
               onTap: () {
-                Navigator.pop(context);
-                _showAboutDialog();
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/about');
               },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showAboutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('About Expense Manager'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Expense Manager v1.0\n\nA simple and intuitive app to manage your finances effectively. Track your income and expenses to maintain control over your budget.',
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.credit_card, size: 32, color: Colors.blue),
-                  SizedBox(width: 8),
-                  Icon(Icons.attach_money, size: 32, color: Colors.green),
-                  SizedBox(width: 8),
-                  Icon(Icons.analytics, size: 32, color: Colors.purple),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text('Close'),
             ),
           ],
         );
