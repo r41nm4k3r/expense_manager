@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'edit_transaction_screen.dart'; // Import the new EditTransactionScreen
+import 'package:intl/intl.dart'; // Import the intl package for date formatting
 
 class TransactionListScreen extends StatefulWidget {
   const TransactionListScreen({super.key});
@@ -80,36 +81,51 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                     final amount = transaction['amount']?.toString() ?? '0.00';
                     final date = transaction['date'] ?? 'N/A';
 
+                    // Format the date using intl package
+                    final DateTime transactionDate = DateTime.parse(date);
+                    final String formattedDate =
+                        DateFormat('dd-MM-yyyy').format(transactionDate);
+
                     return Card(
                       margin: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 16),
+                          vertical: 4, horizontal: 16),
                       elevation: 5,
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(16),
-                        title: Text(
-                          category,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          'Type: $type, Amount: \$${amount}',
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () => _editTransaction(index),
+                            Text(
+                              category,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () => _deleteTransaction(index),
+                            SizedBox(height: 4),
+                            Text(
+                              'Type: $type, Amount: \$${amount}',
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              formattedDate, // Display formatted date
+                              style: const TextStyle(
+                                  color: Colors.grey, fontSize: 12),
+                            ),
+                            SizedBox(height: 4),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () => _editTransaction(index),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () => _deleteTransaction(index),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        isThreeLine: true,
-                        onTap: () {
-                          print('Tapped on transaction: $transaction');
-                        },
                       ),
                     );
                   },
