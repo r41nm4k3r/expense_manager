@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:expense_manager/screens/settings_screen.dart';
 import 'dart:convert';
 import './screens/dashboard_screen.dart';
 import './screens/add_transaction_screen.dart';
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => DashboardScreen(),
         '/add-transaction': (context) => AddTransactionScreen(),
         '/transaction-list': (context) => TransactionListScreen(),
+        '/settings': (context) => SettingsScreen(), // New Route
       },
     );
   }

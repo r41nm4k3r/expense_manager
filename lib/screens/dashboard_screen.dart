@@ -123,6 +123,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               title: Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.pushNamed(context, '/settings');
               },
             ),
             ListTile(
