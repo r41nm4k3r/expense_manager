@@ -55,7 +55,7 @@ Make the app theme dynamic and toggle between light and dark modes.
     Use ThemeMode in your MaterialApp configuration.
     Allow users to toggle themes from a settings menu.
 
-8. Add Confirmation Dialog for Delete Action
+8. Add Confirmation Dialog for Delete Action :white_check_mark:
 
 Prevent accidental deletion by showing a confirmation dialog when users try to delete a transaction.
 
