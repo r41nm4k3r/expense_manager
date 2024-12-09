@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../main.dart'; // Import the main.dart to access the global theme control
@@ -11,6 +12,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   double _totalIncome = 0.0;
   double _totalExpense = 0.0;
+  Map<String, double> _categoryData = {};
 
   @override
   void initState() {
@@ -32,18 +34,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     double income = 0.0;
     double expense = 0.0;
+    Map<String, double> categoryData = {};
 
     for (var transaction in transactions) {
       if (transaction['type'] == 'Income') {
         income += transaction['amount'];
       } else if (transaction['type'] == 'Expense') {
         expense += transaction['amount'];
+        final category = transaction['category'] ?? 'Other';
+        categoryData[category] =
+            (categoryData[category] ?? 0) + transaction['amount'];
       }
     }
 
     setState(() {
       _totalIncome = income;
       _totalExpense = expense;
+      _categoryData = categoryData;
     });
   }
 
@@ -140,6 +147,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  List<PieChartSectionData> _generatePieChartData() {
+    final List<Color> categoryColors = [
+      Colors.blue,
+      Colors.green,
+      Colors.orange,
+      Colors.purple,
+      Colors.red,
+    ];
+    final keys = _categoryData.keys.toList();
+    return _categoryData.entries.map((entry) {
+      final index = keys.indexOf(entry.key) % categoryColors.length;
+      return PieChartSectionData(
+        value: entry.value,
+        title: '${entry.key}\n${entry.value.toStringAsFixed(0)}',
+        color: categoryColors[index],
+        radius: 50,
+        titleStyle: TextStyle(fontSize: 12, color: Colors.white),
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,26 +247,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/add-transaction')
-                        .then((_) => _calculateTotals());
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text('Add Transaction'),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/transaction-list')
-                        .then((_) => _calculateTotals());
-                  },
-                  icon: Icon(Icons.list),
-                  label: Text('View Transactions'),
-                ),
-              ],
+            Text(
+              'Expense Breakdown',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Expanded(
+              child: Center(
+                child: _categoryData.isEmpty
+                    ? Text('No Data Available')
+                    : PieChart(
+                        PieChartData(
+                          sections: _generatePieChartData(),
+                          borderData: FlBorderData(show: false),
+                          sectionsSpace: 2,
+                          centerSpaceRadius: 40,
+                        ),
+                      ),
+              ),
             ),
           ],
         ),
