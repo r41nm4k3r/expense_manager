@@ -67,7 +67,7 @@ For a more robust app, sync the local SharedPreferences data with a cloud databa
     Implement periodic syncing or a manual "Sync Now" button.
     Users won't lose data if they switch devices.
 
-10. Enhance Transaction Editing
+10. Enhance Transaction Editing :white_check_mark:
 
 Improve the EditTransactionScreen with:
 
