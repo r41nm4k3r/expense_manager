@@ -167,7 +167,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
               ),
               SizedBox(height: 20),
-              // Income vs Expense Chart
+// Income vs Expense Pie Chart
               Card(
                 elevation: 4,
                 child: Padding(
@@ -186,11 +186,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 color: _categories[0]['color'],
                                 value: _totalIncome,
                                 radius: 50,
+                                title:
+                                    '${((_totalIncome / (_totalIncome + _totalExpense)) * 100).toStringAsFixed(1)}%', // Percentage inside the pie
+                                titleStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
                               ),
                               PieChartSectionData(
                                 color: _categories[1]['color'],
                                 value: _totalExpense,
                                 radius: 50,
+                                title:
+                                    '${((_totalExpense / (_totalIncome + _totalExpense)) * 100).toStringAsFixed(1)}%', // Percentage inside the pie
+                                titleStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
                               ),
                             ],
                           ),
@@ -205,7 +217,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                       ),
                       SizedBox(height: 16),
-                      // Income and Expense Percentage Text
+                      // Income and Expense Amounts Text
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -214,8 +226,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Icon(Icons.monetization_on, color: Colors.green),
                               SizedBox(height: 8),
                               Text(
-                                '${((_totalIncome / (_totalIncome + _totalExpense)) * 100).toStringAsFixed(1)}%',
-                                style: TextStyle(fontSize: 18),
+                                '\$${_totalIncome.toStringAsFixed(2)}', // Amount
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.green),
                               ),
                               Text('Income'),
                             ],
@@ -225,8 +238,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Icon(Icons.money_off, color: Colors.red),
                               SizedBox(height: 8),
                               Text(
-                                '${((_totalExpense / (_totalIncome + _totalExpense)) * 100).toStringAsFixed(1)}%',
-                                style: TextStyle(fontSize: 18),
+                                '\$${_totalExpense.toStringAsFixed(2)}', // Amount
+                                style:
+                                    TextStyle(fontSize: 18, color: Colors.red),
                               ),
                               Text('Expense'),
                             ],
@@ -237,8 +251,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              // Expense Breakdown Chart
+
+// Expense Breakdown Pie Chart
               Card(
                 elevation: 4,
                 child: Padding(
@@ -253,10 +267,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             sectionsSpace: 0,
                             centerSpaceRadius: 0,
                             sections: _categoryDetails.map((category) {
+                              double percentage = (category['amount'] /
+                                      _categoryDetails.fold(
+                                          0.0,
+                                          (prev, element) =>
+                                              prev + element['amount'])) *
+                                  100;
                               return PieChartSectionData(
                                 color: category['color'],
                                 value: category['amount'],
                                 radius: 50,
+                                title:
+                                    '${percentage.toStringAsFixed(1)}%', // Percentage inside the pie
+                                titleStyle: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
                               );
                             }).toList(),
                           ),
@@ -274,12 +300,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       // Legend
                       Column(
                         children: _categoryDetails.map((category) {
-                          double percentage = category['amount'] /
-                              (_categoryDetails.fold(
-                                      0.0,
-                                      (prev, element) =>
-                                          prev + element['amount']) *
-                                  100);
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -292,7 +312,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Icon(category['icon'], color: category['color']),
                               SizedBox(width: 8),
                               Text(
-                                '${category['name']} (${percentage.toStringAsFixed(1)}%)',
+                                '${category['name']} - \$${category['amount'].toStringAsFixed(2)}', // Amount next to category
                                 style: TextStyle(fontSize: 16),
                               ),
                             ],
@@ -303,6 +323,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
               ),
+
               SizedBox(height: 16),
               // Other Dashboard Cards
               SizedBox(height: 16),
