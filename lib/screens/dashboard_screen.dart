@@ -118,188 +118,192 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome to Expense Manager!',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Welcome to Expense Manager!',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 26,
+                    ),
+              ),
+              SizedBox(height: 20),
+              // Income vs Expense Chart
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: 200,
+                        child: PieChart(
+                          PieChartData(
+                            sectionsSpace: 0,
+                            centerSpaceRadius: 0,
+                            sections: [
+                              PieChartSectionData(
+                                color: _categories[0]['color'],
+                                value: _totalIncome,
+                                title: 'Income',
+                                radius: 50,
+                                titleStyle: TextStyle(color: Colors.white),
+                              ),
+                              PieChartSectionData(
+                                color: _categories[1]['color'],
+                                value: _totalExpense,
+                                title: 'Expense',
+                                radius: 50,
+                                titleStyle: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Income vs Expense',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                    ],
                   ),
-            ),
-            SizedBox(height: 20),
-            // Income vs Expense Chart
-            Card(
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: 200,
-                      child: PieChart(
-                        PieChartData(
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 0,
-                          sections: [
-                            PieChartSectionData(
-                              color: _categories[0]['color'],
-                              value: _totalIncome,
-                              title: 'Income',
-                              radius: 50,
-                              titleStyle: TextStyle(color: Colors.white),
-                            ),
-                            PieChartSectionData(
-                              color: _categories[1]['color'],
-                              value: _totalExpense,
-                              title: 'Expense',
-                              radius: 50,
-                              titleStyle: TextStyle(color: Colors.white),
-                            ),
-                          ],
+                ),
+              ),
+              SizedBox(height: 16),
+              // Expense Breakdown Chart
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: 200,
+                        child: PieChart(
+                          PieChartData(
+                            sectionsSpace: 0,
+                            centerSpaceRadius: 0,
+                            sections: _categoryDetails.map((category) {
+                              return PieChartSectionData(
+                                color: category['color'],
+                                value: category['amount'],
+                                title: category['name'],
+                                radius: 50,
+                                titleStyle: TextStyle(color: Colors.white),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Income vs Expense',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            // Expense Breakdown Chart
-            Card(
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: 200,
-                      child: PieChart(
-                        PieChartData(
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 0,
-                          sections: _categoryDetails.map((category) {
-                            return PieChartSectionData(
-                              color: category['color'],
-                              value: category['amount'],
-                              title: category['name'],
-                              radius: 50,
-                              titleStyle: TextStyle(color: Colors.white),
-                            );
-                          }).toList(),
-                        ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Expense Breakdown',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Expense Breakdown',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            // Other Dashboard Cards
-            SizedBox(height: 16),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                title: Text('Total Balance',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(
-                  '\$${(_totalIncome - _totalExpense).toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 20),
+              // Other Dashboard Cards
+              SizedBox(height: 16),
+              Card(
+                elevation: 4,
+                child: ListTile(
+                  title: Text('Total Balance',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(
+                    '\$${(_totalIncome - _totalExpense).toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                title: Text('Total Income',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(
-                  '\$${_totalIncome.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 20, color: Colors.green),
+              SizedBox(height: 16),
+              Card(
+                elevation: 4,
+                child: ListTile(
+                  title: Text('Total Income',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(
+                    '\$${_totalIncome.toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 20, color: Colors.green),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            Card(
-              elevation: 4,
-              child: ListTile(
-                title: Text('Total Expense',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(
-                  '\$${_totalExpense.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 20, color: Colors.red),
+              SizedBox(height: 16),
+              Card(
+                elevation: 4,
+                child: ListTile(
+                  title: Text('Total Expense',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(
+                    '\$${_totalExpense.toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 20, color: Colors.red),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/add-transaction')
-                        .then((_) => _calculateTotals());
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text('Add Transaction'),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/transaction-list')
-                        .then((_) => _calculateTotals());
-                  },
-                  icon: Icon(Icons.list),
-                  label: Text('View Transactions'),
-                ),
-              ],
-            ),
-            SizedBox(height: 16), // Add some space before the footer
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Made with ',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Icon(
-                      Icons.flutter_dash,
-                      color: Colors.blue,
-                      size: 20,
-                    ),
-                    Text(
-                      ' and ',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                      size: 20,
-                    ),
-                  ],
+              SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/add-transaction')
+                          .then((_) => _calculateTotals());
+                    },
+                    icon: Icon(Icons.add),
+                    label: Text('Add Transaction'),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/transaction-list')
+                          .then((_) => _calculateTotals());
+                    },
+                    icon: Icon(Icons.list),
+                    label: Text('View Transactions'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16), // Add some space before the footer
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Made with ',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Icon(
+                        Icons.flutter_dash,
+                        color: Colors.blue,
+                        size: 20,
+                      ),
+                      Text(
+                        ' and ',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
