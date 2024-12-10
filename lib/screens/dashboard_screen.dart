@@ -17,9 +17,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     {'name': 'Expense', 'amount': 0.0, 'color': Colors.red},
   ];
   List<Map<String, dynamic>> _categoryDetails = [
+    {'name': 'Food', 'amount': 0.0, 'color': Colors.purple},
     {'name': 'Groceries', 'amount': 0.0, 'color': Colors.blue},
     {'name': 'Utilities', 'amount': 0.0, 'color': Colors.orange},
-    {'name': 'Entertainment', 'amount': 0.0, 'color': Colors.purple},
+    {'name': 'Entertainment', 'amount': 0.0, 'color': Colors.red},
     {'name': 'Salary', 'amount': 0.0, 'color': Colors.green},
     {'name': 'Investment', 'amount': 0.0, 'color': Colors.teal},
   ];
