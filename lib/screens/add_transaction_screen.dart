@@ -19,6 +19,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   String _transactionType = 'Income'; // Default transaction type
   String _paymentMethod = 'Cash'; // Default payment method
   final _amountController = TextEditingController();
+  final _descriptionController =
+      TextEditingController(); // New field for description
   final List<String> _categories = [
     'Salary',
     'Food',
@@ -52,6 +54,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _selectedCategory = transaction['category'] ?? 'Food';
       _paymentMethod = transaction['paymentMethod'] ?? 'Cash';
       _amountController.text = transaction['amount']?.toString() ?? '';
+      _descriptionController.text =
+          transaction['description'] ?? ''; // Load description
       _selectedDate =
           DateTime.tryParse(transaction['date'] ?? '') ?? DateTime.now();
     }
@@ -60,12 +64,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   @override
   void dispose() {
     _amountController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
   void _saveTransaction() async {
     final prefs = await SharedPreferences.getInstance();
     final String amount = _amountController.text;
+    final String description = _descriptionController.text;
 
     if (amount.isEmpty || _selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -78,6 +84,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       'type': _transactionType,
       'category': _selectedCategory,
       'amount': double.tryParse(amount) ?? 0.0,
+      'description': description, // Save description
       'paymentMethod': _paymentMethod,
       'date': _selectedDate!.toIso8601String(),
     };
@@ -203,6 +210,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   hintText: 'Enter amount',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Description',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextField(
+                controller: _descriptionController,
+                maxLines: 2,
+                decoration: const InputDecoration(
+                  hintText: 'Enter a brief description',
                   border: OutlineInputBorder(),
                 ),
               ),
