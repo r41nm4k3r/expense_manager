@@ -90,3 +90,7 @@ Enable multiple user profiles for shared devices:
 13. Add Pyament method :white_check_mark:
 
 Give user the option to choose between cash or card as payment ,ethod. Implement also in the transaction list.
+
+14. Add Splash screen with logo
+
+add a simple splash screen with the option to disable it form the settings. 
