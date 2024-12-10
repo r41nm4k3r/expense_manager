@@ -138,51 +138,75 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Pie chart for income vs expense
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: 200,
-                      child: PieChart(
-                        PieChartData(
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 0,
-                          sections: [
-                            PieChartSectionData(
-                              color: _categories[0]['color'],
-                              value: _totalIncome,
-                              title: 'Income',
-                              radius: 50,
-                              titleStyle: TextStyle(color: Colors.white),
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          height: 200,
+                          child: PieChart(
+                            PieChartData(
+                              sectionsSpace: 0,
+                              centerSpaceRadius: 0,
+                              sections: [
+                                PieChartSectionData(
+                                  color: _categories[0]['color'],
+                                  value: _totalIncome,
+                                  title: 'Income',
+                                  radius: 50,
+                                  titleStyle: TextStyle(color: Colors.white),
+                                ),
+                                PieChartSectionData(
+                                  color: _categories[1]['color'],
+                                  value: _totalExpense,
+                                  title: 'Expense',
+                                  radius: 50,
+                                  titleStyle: TextStyle(color: Colors.white),
+                                ),
+                              ],
                             ),
-                            PieChartSectionData(
-                              color: _categories[1]['color'],
-                              value: _totalExpense,
-                              title: 'Expense',
-                              radius: 50,
-                              titleStyle: TextStyle(color: Colors.white),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Income vs Expense',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ],
                     ),
                     // Pie chart for categories
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: 200,
-                      child: PieChart(
-                        PieChartData(
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 0,
-                          sections: _categoryDetails.map((category) {
-                            return PieChartSectionData(
-                              color: category['color'],
-                              value: category['amount'],
-                              title: category['name'],
-                              radius: 50,
-                              titleStyle: TextStyle(color: Colors.white),
-                            );
-                          }).toList(),
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          height: 200,
+                          child: PieChart(
+                            PieChartData(
+                              sectionsSpace: 0,
+                              centerSpaceRadius: 0,
+                              sections: _categoryDetails.map((category) {
+                                return PieChartSectionData(
+                                  color: category['color'],
+                                  value: category['amount'],
+                                  title: category['name'],
+                                  radius: 50,
+                                  titleStyle: TextStyle(color: Colors.white),
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Expense Breakdown',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -344,15 +368,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('About Expense Manager'),
-          content: Text(
-            'Expense Manager is a simple app to track your income and expenses.\n\nMade with Flutter and ❤️ !',
-            style: TextStyle(fontFamily: 'NotoEmoji', fontSize: 16),
+          title: Text('About'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                logoPath,
+                width: 60,
+                height: 60,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Expense Manager App\nVersion 1.0.0\nBuilt with Flutter',
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-          actions: <Widget>[
+          actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pop(context); // Close the dialog
               },
               child: Text('Close'),
             ),
