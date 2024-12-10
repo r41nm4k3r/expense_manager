@@ -129,89 +129,89 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
             ),
             SizedBox(height: 20),
-            // Both charts side by side in the same card
+            // Income vs Expense Chart
             Card(
               elevation: 4,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
                   children: [
-                    // Pie chart for income vs expense
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          height: 200,
-                          child: PieChart(
-                            PieChartData(
-                              sectionsSpace: 0,
-                              centerSpaceRadius: 0,
-                              sections: [
-                                PieChartSectionData(
-                                  color: _categories[0]['color'],
-                                  value: _totalIncome,
-                                  title: 'Income',
-                                  radius: 50,
-                                  titleStyle: TextStyle(color: Colors.white),
-                                ),
-                                PieChartSectionData(
-                                  color: _categories[1]['color'],
-                                  value: _totalExpense,
-                                  title: 'Expense',
-                                  radius: 50,
-                                  titleStyle: TextStyle(color: Colors.white),
-                                ),
-                              ],
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 200,
+                      child: PieChart(
+                        PieChartData(
+                          sectionsSpace: 0,
+                          centerSpaceRadius: 0,
+                          sections: [
+                            PieChartSectionData(
+                              color: _categories[0]['color'],
+                              value: _totalIncome,
+                              title: 'Income',
+                              radius: 50,
+                              titleStyle: TextStyle(color: Colors.white),
                             ),
-                          ),
+                            PieChartSectionData(
+                              color: _categories[1]['color'],
+                              value: _totalExpense,
+                              title: 'Expense',
+                              radius: 50,
+                              titleStyle: TextStyle(color: Colors.white),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Income vs Expense',
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ],
+                      ),
                     ),
-                    // Pie chart for categories
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          height: 200,
-                          child: PieChart(
-                            PieChartData(
-                              sectionsSpace: 0,
-                              centerSpaceRadius: 0,
-                              sections: _categoryDetails.map((category) {
-                                return PieChartSectionData(
-                                  color: category['color'],
-                                  value: category['amount'],
-                                  title: category['name'],
-                                  radius: 50,
-                                  titleStyle: TextStyle(color: Colors.white),
-                                );
-                              }).toList(),
-                            ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Income vs Expense',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Expense Breakdown',
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
             ),
+            SizedBox(height: 16),
+            // Expense Breakdown Chart
+            Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 200,
+                      child: PieChart(
+                        PieChartData(
+                          sectionsSpace: 0,
+                          centerSpaceRadius: 0,
+                          sections: _categoryDetails.map((category) {
+                            return PieChartSectionData(
+                              color: category['color'],
+                              value: category['amount'],
+                              title: category['name'],
+                              radius: 50,
+                              titleStyle: TextStyle(color: Colors.white),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Expense Breakdown',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Other Dashboard Cards
             SizedBox(height: 16),
             Card(
               elevation: 4,
@@ -271,7 +271,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ),
             SizedBox(height: 16), // Add some space before the footer
-            // Footer Section with Text and Icons
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Center(
