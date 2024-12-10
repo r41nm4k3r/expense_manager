@@ -91,6 +91,6 @@ Enable multiple user profiles for shared devices:
 
 Give user the option to choose between cash or card as payment ,ethod. Implement also in the transaction list.
 
-14. Add Splash screen with logo
+14. Add Splash screen with logo :white_check_mark:
 
 add a simple splash screen with the option to disable it form the settings. 
