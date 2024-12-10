@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; // For JSON encoding/decoding
+import 'package:intl/intl.dart'; // For formatting dates
 
 class AddTransactionScreen extends StatefulWidget {
   final Map<String, dynamic>? transaction;
@@ -29,7 +30,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     'Other'
   ];
 
-  // Map of category names to icons
   final Map<String, IconData> _categoryIcons = {
     'Salary': Icons.monetization_on,
     'Food': Icons.fastfood,
@@ -38,16 +38,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     'Transport': Icons.directions_car,
     'Utilities': Icons.home,
     'Entertainment': Icons.movie,
-    'Other': Icons.request_page,
+    'Other': Icons.category,
   };
 
-  DateTime? _selectedDate; // Store the selected date
+  DateTime? _selectedDate;
 
   @override
   void initState() {
     super.initState();
     if (widget.transaction != null) {
-      // Initialize fields with existing transaction data if available
       final transaction = widget.transaction!;
       _transactionType = transaction['type'] ?? 'Income';
       _selectedCategory = transaction['category'] ?? 'Food';
@@ -60,7 +59,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   @override
   void dispose() {
-    _amountController.dispose(); // Dispose the controller to avoid memory leaks
+    _amountController.dispose();
     super.dispose();
   }
 
@@ -70,7 +69,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     if (amount.isEmpty || _selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter all details')),
+        const SnackBar(content: Text('Please complete all fields')),
       );
       return;
     }
@@ -78,21 +77,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final Map<String, dynamic> transaction = {
       'type': _transactionType,
       'category': _selectedCategory,
-      'amount': double.parse(amount),
+      'amount': double.tryParse(amount) ?? 0.0,
       'paymentMethod': _paymentMethod,
-      'date': _selectedDate!.toIso8601String(), // Save selected date
+      'date': _selectedDate!.toIso8601String(),
     };
 
-    // Fetch existing transactions
     final String? existingTransactions = prefs.getString('transactions');
     List<dynamic> transactions =
         existingTransactions != null ? json.decode(existingTransactions) : [];
 
-    // If editing, replace the existing transaction
     if (widget.transactionIndex != null) {
       transactions[widget.transactionIndex!] = transaction;
     } else {
-      // Add new transaction
       transactions.add(transaction);
     }
 
@@ -102,7 +98,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       const SnackBar(content: Text('Transaction saved successfully!')),
     );
 
-    Navigator.pop(context); // Go back after saving
+    Navigator.pop(context);
   }
 
   void _pickDate() async {
@@ -112,7 +108,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
-    if (pickedDate != null && pickedDate != _selectedDate) {
+    if (pickedDate != null) {
       setState(() {
         _selectedDate = pickedDate;
       });
@@ -129,9 +125,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
-            onPressed: () {
-              _showHelpDialog(); // Show help dialog
-            },
+            onPressed: _showHelpDialog,
           ),
         ],
       ),
@@ -141,7 +135,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Transaction Type
               const Text(
                 'Transaction Type',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -175,8 +168,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-
-              // Category Dropdown
               const Text(
                 'Category',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -189,7 +180,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     value: category,
                     child: Row(
                       children: [
-                        Icon(_categoryIcons[category]), // Display icon
+                        Icon(_categoryIcons[category]),
                         const SizedBox(width: 10),
                         Text(category),
                       ],
@@ -203,8 +194,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // Amount Input
               const Text(
                 'Amount',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -218,11 +207,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Payment Method Dropdown
               DropdownButtonFormField<String>(
                 value: _paymentMethod,
-                onChanged: (String? value) {
+                onChanged: (value) {
                   setState(() {
                     _paymentMethod = value!;
                   });
@@ -236,8 +223,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 decoration: const InputDecoration(labelText: 'Payment Method'),
               ),
               const SizedBox(height: 16),
-
-              // Date Picker
               const Text(
                 'Date',
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -248,7 +233,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     child: Text(
                       _selectedDate == null
                           ? 'No date selected'
-                          : 'Selected Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
+                          : DateFormat('dd/MM/yyyy').format(_selectedDate!),
                     ),
                   ),
                   ElevatedButton(
@@ -258,8 +243,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-
-              // Save Button
               ElevatedButton(
                 onPressed: _saveTransaction,
                 child: Text(widget.transaction != null
@@ -280,14 +263,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         return AlertDialog(
           title: const Text('Help'),
           content: const Text(
-            'Here you can add or edit a transaction. Select the transaction type, choose a category, enter the amount, pick a date, and then click "Save Transaction". Your transaction will be saved for future tracking.',
+            'To add or edit a transaction, fill in all fields, pick a date, and click "Save Transaction".',
             textAlign: TextAlign.center,
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the help dialog
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Close'),
             ),
           ],
