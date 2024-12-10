@@ -28,7 +28,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     'Transport': Icons.directions_car,
     'Utilities': Icons.home,
     'Entertainment': Icons.movie,
-    'Other': Icons.category,
+    'Other': Icons.request_page,
   };
 
   @override

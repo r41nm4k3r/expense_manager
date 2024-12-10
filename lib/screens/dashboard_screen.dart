@@ -17,48 +17,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     {'name': 'Expense', 'amount': 0.0, 'color': Colors.red},
   ];
   List<Map<String, dynamic>> _categoryDetails = [
-    {
-      'name': 'Food',
-      'amount': 0.0,
-      'color': Colors.purple,
-      'icon': Icons.fastfood
-    },
-    {
-      'name': 'Groceries',
-      'amount': 0.0,
-      'color': Colors.blue,
-      'icon': Icons.shopping_cart
-    },
-    {
-      'name': 'Utilities',
-      'amount': 0.0,
-      'color': Colors.orange,
-      'icon': Icons.tv
-    },
-    {
-      'name': 'Entertainment',
-      'amount': 0.0,
-      'color': Colors.red,
-      'icon': Icons.movie
-    },
-    {
-      'name': 'Salary',
-      'amount': 0.0,
-      'color': Colors.green,
-      'icon': Icons.monetization_on
-    },
-    {
-      'name': 'Investment',
-      'amount': 0.0,
-      'color': Colors.teal,
-      'icon': Icons.account_balance
-    },
-    {
-      'name': 'Other',
-      'amount': 0.0,
-      'color': Colors.grey,
-      'icon': Icons.account_balance
-    },
+    {'name': 'Food', 'amount': 0.0, 'color': Colors.purple},
+    {'name': 'Groceries', 'amount': 0.0, 'color': Colors.blue},
+    {'name': 'Utilities', 'amount': 0.0, 'color': Colors.orange},
+    {'name': 'Entertainment', 'amount': 0.0, 'color': Colors.red},
+    {'name': 'Salary', 'amount': 0.0, 'color': Colors.green},
+    {'name': 'Investment', 'amount': 0.0, 'color': Colors.teal},
+    {'name': 'Other', 'amount': 0.0, 'color': Colors.grey},
   ];
 
   final String logoPath = 'assets/images/logo.png'; // Path to your logo
@@ -185,12 +150,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               PieChartSectionData(
                                 color: _categories[0]['color'],
                                 value: _totalIncome,
+                                title: 'Income',
                                 radius: 50,
+                                titleStyle: TextStyle(color: Colors.white),
                               ),
                               PieChartSectionData(
                                 color: _categories[1]['color'],
                                 value: _totalExpense,
+                                title: 'Expense',
                                 radius: 50,
+                                titleStyle: TextStyle(color: Colors.white),
                               ),
                             ],
                           ),
@@ -203,35 +172,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
-                      ),
-                      SizedBox(height: 16),
-                      // Income and Expense Percentage Text
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: [
-                              Icon(Icons.monetization_on, color: Colors.green),
-                              SizedBox(height: 8),
-                              Text(
-                                '${((_totalIncome / (_totalIncome + _totalExpense)) * 100).toStringAsFixed(1)}%',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              Text('Income'),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Icon(Icons.money_off, color: Colors.red),
-                              SizedBox(height: 8),
-                              Text(
-                                '${((_totalExpense / (_totalIncome + _totalExpense)) * 100).toStringAsFixed(1)}%',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              Text('Expense'),
-                            ],
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -256,7 +196,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               return PieChartSectionData(
                                 color: category['color'],
                                 value: category['amount'],
+                                title: category['name'],
                                 radius: 50,
+                                titleStyle: TextStyle(color: Colors.white),
                               );
                             }).toList(),
                           ),
@@ -270,40 +212,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                       ),
-                      SizedBox(height: 16),
-                      // Legend
-                      Column(
-                        children: _categoryDetails.map((category) {
-                          double percentage = category['amount'] /
-                              (_categoryDetails.fold(
-                                      0.0,
-                                      (prev, element) =>
-                                          prev + element['amount']) *
-                                  100);
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 20,
-                                height: 20,
-                                color: category['color'],
-                              ),
-                              SizedBox(width: 8),
-                              Icon(category['icon'], color: category['color']),
-                              SizedBox(width: 8),
-                              Text(
-                                '${category['name']} (${percentage.toStringAsFixed(1)}%)',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 16),
               // Other Dashboard Cards
               SizedBox(height: 16),
               Card(
@@ -407,14 +319,82 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: () {},
+              leading: Icon(Icons.home),
+              title: Text('Dashboard'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+              },
             ),
             ListTile(
-              leading: Icon(Icons.account_balance_wallet),
-              title: Text('Wallet'),
-              onTap: () {},
+              leading: Icon(Icons.add),
+              title: Text('Add Transaction'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/add-transaction')
+                    .then((_) => _calculateTotals());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.list),
+              title: Text('Transaction List'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/transaction-list')
+                    .then((_) => _calculateTotals());
+              },
+            ),
+            // Settings menu item
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/settings');
+              },
+            ),
+            // About menu item, now with pop-up
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('About'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                _showAboutDialog(); // Show the about pop-up
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to show the About dialog
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('About'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                logoPath,
+                width: 60,
+                height: 60,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Expense Manager App\nVersion 1.0.0\nBuilt with Flutter',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('Close'),
             ),
           ],
         );

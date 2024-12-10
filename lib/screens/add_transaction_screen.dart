@@ -38,7 +38,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     'Transport': Icons.directions_car,
     'Utilities': Icons.home,
     'Entertainment': Icons.movie,
-    'Other': Icons.category,
+    'Other': Icons.request_page,
   };
 
   DateTime? _selectedDate; // Store the selected date
