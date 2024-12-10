@@ -22,8 +22,10 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   // Define a map for category icons
   final Map<String, IconData> _categoryIcons = {
     'Salary': Icons.monetization_on,
+    'Food': Icons.fastfood,
     'Investment': Icons.trending_up,
     'Groceries': Icons.shopping_cart,
+    'Transport': Icons.directions_car,
     'Utilities': Icons.home,
     'Entertainment': Icons.movie,
     'Other': Icons.category,

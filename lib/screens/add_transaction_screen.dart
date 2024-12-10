@@ -18,13 +18,26 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   String _transactionType = 'Income'; // Default transaction type
   String _paymentMethod = 'Cash'; // Default payment method
   final _amountController = TextEditingController();
-  final List<String> _categories = ['Food', 'Transport', 'Salary', 'Other'];
+  final List<String> _categories = [
+    'Food',
+    'Transport',
+    'Salary',
+    'Investment',
+    'Groceries',
+    'Utilities',
+    'Entertainment',
+    'Other'
+  ];
 
   // Map of category names to icons
   final Map<String, IconData> _categoryIcons = {
-    'Food': Icons.fastfood,
-    'Transport': Icons.directions_car,
     'Salary': Icons.monetization_on,
+    'Food': Icons.fastfood,
+    'Investment': Icons.trending_up,
+    'Groceries': Icons.shopping_cart,
+    'Transport': Icons.directions_car,
+    'Utilities': Icons.home,
+    'Entertainment': Icons.movie,
     'Other': Icons.category,
   };
 
