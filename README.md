@@ -41,7 +41,8 @@ Include a visual summary of the user's financial data:
     Bar Chart: Compare income vs. expenses over time.
     Use packages like charts_flutter or fl_chart.
 
-6. Add Multi-Delete Feature
+6. Add Multi-Delete Feature :white_check_mark:
+
 
 Allow users to select multiple transactions and delete them in bulk.
 
