@@ -19,6 +19,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   String _paymentMethod = 'Cash'; // Default payment method
   final _amountController = TextEditingController();
   final List<String> _categories = ['Food', 'Transport', 'Salary', 'Other'];
+
+  // Map of category names to icons
+  final Map<String, IconData> _categoryIcons = {
+    'Food': Icons.fastfood,
+    'Transport': Icons.directions_car,
+    'Salary': Icons.monetization_on,
+    'Other': Icons.category,
+  };
+
   DateTime? _selectedDate; // Store the selected date
 
   @override
@@ -165,7 +174,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 items: _categories.map((category) {
                   return DropdownMenuItem(
                     value: category,
-                    child: Text(category),
+                    child: Row(
+                      children: [
+                        Icon(_categoryIcons[category]), // Display icon
+                        const SizedBox(width: 10),
+                        Text(category),
+                      ],
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {

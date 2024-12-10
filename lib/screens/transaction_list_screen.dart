@@ -19,6 +19,16 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   bool _isLoading = true;
   Set<int> _selectedTransactions = Set<int>();
 
+  // Define a map for category icons
+  final Map<String, IconData> _categoryIcons = {
+    'Salary': Icons.monetization_on,
+    'Investment': Icons.trending_up,
+    'Groceries': Icons.shopping_cart,
+    'Utilities': Icons.home,
+    'Entertainment': Icons.movie,
+    'Other': Icons.category,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -101,6 +111,44 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     }
   }
 
+  // Bulk delete function
+  void _bulkDeleteTransactions() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Bulk Delete'),
+        content: const Text(
+            'Are you sure you want to delete the selected transactions? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      setState(() {
+        _transactions.removeWhere((transaction) =>
+            _selectedTransactions.contains(_transactions.indexOf(transaction)));
+        _selectedTransactions.clear();
+      });
+
+      // Update SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('transactions', json.encode(_transactions));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selected transactions deleted')),
+      );
+    }
+  }
+
   Future<void> _exportTransactionsToCSV() async {
     if (_transactions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -146,6 +194,12 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
             icon: const Icon(Icons.file_download),
             onPressed: _exportTransactionsToCSV,
           ),
+          // Bulk delete button
+          IconButton(
+            icon: const Icon(Icons.delete_forever),
+            onPressed:
+                _selectedTransactions.isEmpty ? null : _bulkDeleteTransactions,
+          ),
         ],
       ),
       body: Column(
@@ -169,6 +223,10 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                           final String formattedDate =
                               DateFormat('dd-MM-yyyy').format(transactionDate);
 
+                          // Get category icon
+                          final icon =
+                              _categoryIcons[category] ?? Icons.category;
+
                           return Card(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 16),
@@ -178,10 +236,16 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    category,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                  Row(
+                                    children: [
+                                      Icon(icon), // Category Icon
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        category,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(height: 4),
                                   Text('Type: $type, Amount: \$${amount}'),
@@ -209,6 +273,21 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                                         icon: const Icon(Icons.delete),
                                         onPressed: () =>
                                             _deleteTransaction(index),
+                                      ),
+                                      // Checkbox for selecting the transaction for bulk delete
+                                      Checkbox(
+                                        value: _selectedTransactions
+                                            .contains(index),
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            if (value == true) {
+                                              _selectedTransactions.add(index);
+                                            } else {
+                                              _selectedTransactions
+                                                  .remove(index);
+                                            }
+                                          });
+                                        },
                                       ),
                                     ],
                                   ),
