@@ -9,11 +9,20 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _darkMode = false;
+  bool _showSplash = true;
 
   @override
   void initState() {
     super.initState();
-    _loadThemePreference();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _darkMode = prefs.getBool('darkMode') ?? false;
+      _showSplash = prefs.getBool('showSplash') ?? true; // Default to true
+    });
   }
 
   void _toggleDarkMode(bool value) async {
@@ -29,45 +38,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
     prefs.setBool('darkMode', value);
   }
 
-  Future<void> _loadThemePreference() async {
-    final prefs = await SharedPreferences.getInstance();
+  void _toggleSplashScreen(bool value) async {
     setState(() {
-      _darkMode = prefs.getBool('darkMode') ?? false;
+      _showSplash = value;
     });
+
+    // Save the splash screen preference
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('showSplash', value);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: ListView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         children: [
           SwitchListTile(
-            title: Text('Dark Mode'),
+            title: const Text('Dark Mode'),
             value: _darkMode,
             onChanged: _toggleDarkMode,
           ),
-          Divider(),
+          SwitchListTile(
+            title: const Text('Show Splash Screen'),
+            value: _showSplash,
+            onChanged: _toggleSplashScreen,
+          ),
+          const Divider(),
           ListTile(
-            leading: Icon(Icons.info),
-            title: Text('About App'),
-            subtitle: Text('Version 1.0.0'),
+            leading: const Icon(Icons.info),
+            title: const Text('About App'),
+            subtitle: const Text('Version 1.0.0'),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('About Expense Manager'),
-                    content: Text(
+                    title: const Text('About Expense Manager'),
+                    content: const Text(
                       'Expense Manager is a simple app designed to help you track your income and expenses. Version 1.0.0.',
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        child: Text('Close'),
+                        child: const Text('Close'),
                       ),
                     ],
                   );

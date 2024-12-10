@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expense_manager/screens/settings_screen.dart';
-import 'dart:convert';
 import './screens/dashboard_screen.dart';
 import './screens/add_transaction_screen.dart';
 import './screens/transaction_list_screen.dart';
+import './screens/splash_screen.dart'; // Import the Splash Screen
 
 void main() {
   runApp(MyApp());
@@ -23,9 +23,23 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.light;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadThemePreference();
+  }
+
   void setTheme(ThemeMode mode) {
     setState(() {
       _themeMode = mode;
+    });
+  }
+
+  Future<void> _loadThemePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    setState(() {
+      _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
@@ -43,13 +57,53 @@ class _MyAppState extends State<MyApp> {
         brightness: Brightness.dark,
       ),
       themeMode: _themeMode,
-      initialRoute: '/',
+      home: const StartupScreen(), // Updated to use the StartupScreen
       routes: {
-        '/': (context) => DashboardScreen(),
+        '/dashboard': (context) => DashboardScreen(),
         '/add-transaction': (context) => AddTransactionScreen(),
         '/transaction-list': (context) => TransactionListScreen(),
-        '/settings': (context) => SettingsScreen(), // New Route
+        '/settings': (context) => SettingsScreen(),
       },
     );
+  }
+}
+
+class StartupScreen extends StatefulWidget {
+  const StartupScreen({super.key});
+
+  @override
+  _StartupScreenState createState() => _StartupScreenState();
+}
+
+class _StartupScreenState extends State<StartupScreen> {
+  bool _showSplash = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSplashPreference();
+  }
+
+  Future<void> _checkSplashPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool? showSplash = prefs.getBool('showSplash');
+    setState(() {
+      _showSplash = showSplash ?? true; // Default to true if not set
+    });
+
+    if (!_showSplash) {
+      _navigateToDashboard();
+    } else {
+      Future.delayed(const Duration(seconds: 3), _navigateToDashboard);
+    }
+  }
+
+  void _navigateToDashboard() {
+    Navigator.pushReplacementNamed(context, '/dashboard');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _showSplash ? const SplashScreen() : const SizedBox.shrink();
   }
 }
