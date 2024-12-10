@@ -19,11 +19,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   String _paymentMethod = 'Cash'; // Default payment method
   final _amountController = TextEditingController();
   final List<String> _categories = [
-    'Food',
-    'Transport',
     'Salary',
+    'Food',
     'Investment',
     'Groceries',
+    'Transport',
     'Utilities',
     'Entertainment',
     'Other'
