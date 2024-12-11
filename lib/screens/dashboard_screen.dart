@@ -128,7 +128,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(width: 8), // Space between logo and title
             const Text(
-              'Expense Manager',
+              'Xpense Manager',
               style: TextStyle(fontSize: 24),
             ),
           ],
