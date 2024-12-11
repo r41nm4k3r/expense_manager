@@ -1,4 +1,4 @@
-## The expense_manager
+# The expense_manager
 
 A new Flutter project.
 
@@ -19,4 +19,4 @@ Add Pyament method :white_check_mark:
 Add Splash screen with logo :white_check_mark:
 
 
-# Features coming soon:
+### Features coming soon:
