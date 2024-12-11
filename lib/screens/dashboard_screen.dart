@@ -5,6 +5,8 @@ import 'package:fl_chart/fl_chart.dart'; // Import FLChart package
 import '../main.dart'; // Import the main.dart to access the global theme control
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
@@ -12,11 +14,11 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   double _totalIncome = 0.0;
   double _totalExpense = 0.0;
-  List<Map<String, dynamic>> _categories = [
+  final List<Map<String, dynamic>> _categories = [
     {'name': 'Income', 'amount': 0.0, 'color': Colors.green},
     {'name': 'Expense', 'amount': 0.0, 'color': Colors.red},
   ];
-  List<Map<String, dynamic>> _categoryDetails = [
+  final List<Map<String, dynamic>> _categoryDetails = [
     {
       'name': 'Food',
       'amount': 0.0,
@@ -124,8 +126,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               width: 30, // Adjust the size of the logo
               height: 30, // Adjust the size of the logo
             ),
-            SizedBox(width: 8), // Space between logo and title
-            Text(
+            const SizedBox(width: 8), // Space between logo and title
+            const Text(
               'Expense Manager',
               style: TextStyle(fontSize: 24),
             ),
@@ -148,7 +150,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: _openMenu,
           ),
         ],
@@ -166,7 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       fontSize: 26,
                     ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 // Income vs Expense Pie Chart
               Card(
                 elevation: 4,
@@ -188,7 +190,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 radius: 50,
                                 title:
                                     '${((_totalIncome / (_totalIncome + _totalExpense)) * 100).toStringAsFixed(1)}%', // Percentage inside the pie
-                                titleStyle: TextStyle(
+                                titleStyle: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
@@ -199,7 +201,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 radius: 50,
                                 title:
                                     '${((_totalExpense / (_totalIncome + _totalExpense)) * 100).toStringAsFixed(1)}%', // Percentage inside the pie
-                                titleStyle: TextStyle(
+                                titleStyle: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
@@ -208,7 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Income vs Expense',
                         style:
@@ -216,33 +218,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       // Income and Expense Amounts Text
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Column(
                             children: [
-                              Icon(Icons.monetization_on, color: Colors.green),
-                              SizedBox(height: 8),
+                              const Icon(Icons.monetization_on,
+                                  color: Colors.green),
+                              const SizedBox(height: 8),
                               Text(
                                 '\$${_totalIncome.toStringAsFixed(2)}', // Amount
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, color: Colors.green),
                               ),
-                              Text('Income'),
+                              const Text('Income'),
                             ],
                           ),
                           Column(
                             children: [
-                              Icon(Icons.money_off, color: Colors.red),
-                              SizedBox(height: 8),
+                              const Icon(Icons.money_off, color: Colors.red),
+                              const SizedBox(height: 8),
                               Text(
                                 '\$${_totalExpense.toStringAsFixed(2)}', // Amount
-                                style:
-                                    TextStyle(fontSize: 18, color: Colors.red),
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.red),
                               ),
-                              Text('Expense'),
+                              const Text('Expense'),
                             ],
                           ),
                         ],
@@ -279,7 +282,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 radius: 50,
                                 title:
                                     '${percentage.toStringAsFixed(1)}%', // Percentage inside the pie
-                                titleStyle: TextStyle(
+                                titleStyle: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
@@ -288,7 +291,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Expense Breakdown',
                         style:
@@ -296,7 +299,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       // Legend
                       Column(
                         children: _categoryDetails.map((category) {
@@ -308,12 +311,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 height: 20,
                                 color: category['color'],
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Icon(category['icon'], color: category['color']),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
                                 '${category['name']} - \$${category['amount'].toStringAsFixed(2)}', // Amount next to category
-                                style: TextStyle(fontSize: 16),
+                                style: const TextStyle(fontSize: 16),
                               ),
                             ],
                           );
@@ -324,45 +327,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Other Dashboard Cards
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Card(
                 elevation: 4,
                 child: ListTile(
-                  title: Text('Total Balance',
+                  title: const Text('Total Balance',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(
                     '\$${(_totalIncome - _totalExpense).toStringAsFixed(2)}',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Card(
                 elevation: 4,
                 child: ListTile(
-                  title: Text('Total Income',
+                  title: const Text('Total Income',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(
                     '\$${_totalIncome.toStringAsFixed(2)}',
-                    style: TextStyle(fontSize: 20, color: Colors.green),
+                    style: const TextStyle(fontSize: 20, color: Colors.green),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Card(
                 elevation: 4,
                 child: ListTile(
-                  title: Text('Total Expense',
+                  title: const Text('Total Expense',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text(
                     '\$${_totalExpense.toStringAsFixed(2)}',
-                    style: TextStyle(fontSize: 20, color: Colors.red),
+                    style: const TextStyle(fontSize: 20, color: Colors.red),
                   ),
                 ),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -371,22 +374,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Navigator.pushNamed(context, '/add-transaction')
                           .then((_) => _calculateTotals());
                     },
-                    icon: Icon(Icons.add),
-                    label: Text('Add Transaction'),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Transaction'),
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.pushNamed(context, '/transaction-list')
                           .then((_) => _calculateTotals());
                     },
-                    icon: Icon(Icons.list),
-                    label: Text('View Transactions'),
+                    icon: const Icon(Icons.list),
+                    label: const Text('View Transactions'),
                   ),
                 ],
               ),
-              SizedBox(height: 16), // Add some space before the footer
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              const SizedBox(height: 16), // Add some space before the footer
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
                 child: Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -428,15 +431,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Dashboard'),
+              leading: const Icon(Icons.home),
+              title: const Text('Dashboard'),
               onTap: () {
                 Navigator.pop(context); // Close the menu
               },
             ),
             ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Add Transaction'),
+              leading: const Icon(Icons.add),
+              title: const Text('Add Transaction'),
               onTap: () {
                 Navigator.pop(context); // Close the menu
                 Navigator.pushNamed(context, '/add-transaction')
@@ -444,8 +447,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.list),
-              title: Text('Transaction List'),
+              leading: const Icon(Icons.list),
+              title: const Text('Transaction List'),
               onTap: () {
                 Navigator.pop(context); // Close the menu
                 Navigator.pushNamed(context, '/transaction-list')
@@ -454,16 +457,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             // Settings menu item
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
               onTap: () {
                 Navigator.pop(context); // Close the menu
                 Navigator.pushNamed(context, '/settings');
               },
             ),
             ListTile(
-              leading: Icon(Icons.info),
-              title: Text('About'),
+              leading: const Icon(Icons.info),
+              title: const Text('About'),
               onTap: () {
                 Navigator.pop(context); // Close the menu
                 _showAboutDialog(); // Show the about pop-up
@@ -481,7 +484,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('About'),
+          title: const Text('About'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -490,8 +493,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 60,
                 height: 60,
               ),
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 'Expense Manager App\nVersion 1.0.0\nBuilt with Flutter',
                 textAlign: TextAlign.center,
               ),
@@ -502,7 +505,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );

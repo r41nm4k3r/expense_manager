@@ -7,11 +7,13 @@ import './screens/transaction_list_screen.dart';
 import './screens/splash_screen.dart'; // Import the Splash Screen
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
   static late _MyAppState state;
+
+  const MyApp({super.key});
 
   @override
   _MyAppState createState() {
@@ -59,10 +61,10 @@ class _MyAppState extends State<MyApp> {
       themeMode: _themeMode,
       home: const StartupScreen(), // Updated to use the StartupScreen
       routes: {
-        '/dashboard': (context) => DashboardScreen(),
-        '/add-transaction': (context) => AddTransactionScreen(),
-        '/transaction-list': (context) => TransactionListScreen(),
-        '/settings': (context) => SettingsScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/add-transaction': (context) => const AddTransactionScreen(),
+        '/transaction-list': (context) => const TransactionListScreen(),
+        '/settings': (context) => const SettingsScreen(),
       },
     );
   }

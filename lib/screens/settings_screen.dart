@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }

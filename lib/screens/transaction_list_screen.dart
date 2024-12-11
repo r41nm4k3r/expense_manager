@@ -17,7 +17,7 @@ class TransactionListScreen extends StatefulWidget {
 class _TransactionListScreenState extends State<TransactionListScreen> {
   List<dynamic> _transactions = [];
   bool _isLoading = true;
-  Set<int> _selectedTransactions = Set<int>();
+  final Set<int> _selectedTransactions = <int>{};
   bool _isSelecting = false; // Track if we are in selection mode
 
   // Define a map for category icons
@@ -252,7 +252,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
               ),
               const SizedBox(height: 8),
               Text('Type: $type'),
-              Text('Amount: \$${amount}'),
+              Text('Amount: \$$amount'),
               Text('Date: $formattedDate'),
               Text(
                   'Payment Method: ${transaction['paymentMethod'] ?? 'Unknown'}'),
@@ -386,8 +386,8 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                                           Text(
                                             transaction['description'] ??
                                                 'No description',
-                                            style:
-                                                TextStyle(color: Colors.grey),
+                                            style: const TextStyle(
+                                                color: Colors.grey),
                                           ),
                                         ],
                                       ),
