@@ -160,7 +160,14 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     }
 
     List<List<String>> rows = [
-      ["Category", "Type", "Amount", "Date", "Payment Method"],
+      [
+        "Category",
+        "Type",
+        "Amount",
+        "Date",
+        "Payment Method",
+        "Description"
+      ], // Added Description column
     ];
 
     for (var transaction in _transactions) {
@@ -170,6 +177,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         transaction['amount']?.toString() ?? '0.00',
         transaction['date']?.toString() ?? 'N/A',
         transaction['paymentMethod']?.toString() ?? 'Unknown',
+        transaction['description']?.toString() ?? '', // Added Description field
       ]);
     }
 
@@ -220,6 +228,8 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                           final amount =
                               transaction['amount']?.toString() ?? '0.00';
                           final date = transaction['date'] ?? 'N/A';
+                          final description = transaction['description'] ??
+                              'No description'; // Fetch description
 
                           final DateTime transactionDate = DateTime.parse(date);
                           final String formattedDate =
@@ -259,6 +269,12 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                                   ),
                                   Text(
                                     'Payment Method: ${transaction['paymentMethod'] ?? 'Unknown'}',
+                                    style: const TextStyle(
+                                        color: Colors.grey, fontSize: 12),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Description: $description', // Display description
                                     style: const TextStyle(
                                         color: Colors.grey, fontSize: 12),
                                   ),
