@@ -18,6 +18,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   List<dynamic> _transactions = [];
   bool _isLoading = true;
   Set<int> _selectedTransactions = Set<int>();
+  bool _isSelecting = false; // Track if we are in selection mode
 
   // Define a map for category icons
   final Map<String, IconData> _categoryIcons = {
@@ -45,6 +46,28 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
       _transactions =
           transactionsString != null ? json.decode(transactionsString) : [];
       _isLoading = false;
+    });
+  }
+
+  // Toggle selection mode
+  void _toggleSelectionMode() {
+    setState(() {
+      _isSelecting = !_isSelecting;
+      if (!_isSelecting) {
+        _selectedTransactions
+            .clear(); // Clear selection when exiting selection mode
+      }
+    });
+  }
+
+  // Toggle selection of a transaction
+  void _toggleSelection(int index) {
+    setState(() {
+      if (_selectedTransactions.contains(index)) {
+        _selectedTransactions.remove(index);
+      } else {
+        _selectedTransactions.add(index);
+      }
     });
   }
 
@@ -194,6 +217,67 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
     );
   }
 
+  void _showTransactionDetails(int index) {
+    final transaction = _transactions[index];
+    final category = transaction['category'] ?? 'Unknown';
+    final type = transaction['type'] ?? 'Unknown';
+    final amount = transaction['amount']?.toString() ?? '0.00';
+    final date = transaction['date'] ?? 'N/A';
+    final description = transaction['description'] ?? 'No description';
+
+    final DateTime transactionDate = DateTime.parse(date);
+    final String formattedDate =
+        DateFormat('dd-MM-yyyy').format(transactionDate);
+
+    final icon = _categoryIcons[category] ?? Icons.category;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Transaction Details'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Icon(icon),
+                  SizedBox(width: 8),
+                  Text(
+                    category,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text('Type: $type'),
+              Text('Amount: \$${amount}'),
+              Text('Date: $formattedDate'),
+              Text(
+                  'Payment Method: ${transaction['paymentMethod'] ?? 'Unknown'}'),
+              Text('Description: $description'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Close'),
+            ),
+            TextButton(
+              onPressed: () => _editTransaction(index),
+              child: Text('Edit'),
+            ),
+            TextButton(
+              onPressed: () => _deleteTransaction(index),
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -214,11 +298,27 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
             onPressed: _exportTransactionsToCSV,
           ),
           // Bulk delete button
-          IconButton(
-            icon: const Icon(Icons.delete_forever),
-            onPressed:
-                _selectedTransactions.isEmpty ? null : _bulkDeleteTransactions,
-          ),
+          if (_isSelecting) ...[
+            IconButton(
+              icon: const Icon(Icons.delete_forever),
+              onPressed: _selectedTransactions.isEmpty
+                  ? null
+                  : _bulkDeleteTransactions,
+            ),
+            IconButton(
+              icon: const Icon(Icons.check_box_outline_blank),
+              onPressed: () {
+                setState(() {
+                  _selectedTransactions.clear();
+                });
+              },
+            ),
+          ] else ...[
+            IconButton(
+              icon: const Icon(Icons.select_all),
+              onPressed: _toggleSelectionMode,
+            ),
+          ],
         ],
       ),
       body: Column(
@@ -232,93 +332,59 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                         itemCount: _transactions.length,
                         itemBuilder: (context, index) {
                           final transaction = _transactions[index];
-                          final category = transaction['category'] ?? 'Unknown';
-                          final type = transaction['type'] ?? 'Unknown';
-                          final amount =
-                              transaction['amount']?.toString() ?? '0.00';
-                          final date = transaction['date'] ?? 'N/A';
-                          final description = transaction['description'] ??
-                              'No description'; // Fetch description
 
-                          final DateTime transactionDate = DateTime.parse(date);
-                          final String formattedDate =
-                              DateFormat('dd-MM-yyyy').format(transactionDate);
-
-                          // Get category icon
-                          final icon =
-                              _categoryIcons[category] ?? Icons.category;
-
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 16),
-                            elevation: 5,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(icon), // Category Icon
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        category,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text('Type: $type, Amount: \$${amount}'),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    formattedDate,
-                                    style: const TextStyle(
-                                        color: Colors.grey, fontSize: 12),
-                                  ),
-                                  Text(
-                                    'Payment Method: ${transaction['paymentMethod'] ?? 'Unknown'}',
-                                    style: const TextStyle(
-                                        color: Colors.grey, fontSize: 12),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Description: $description', // Display description
-                                    style: const TextStyle(
-                                        color: Colors.grey, fontSize: 12),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.edit),
-                                        onPressed: () =>
-                                            _editTransaction(index),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete),
-                                        onPressed: () =>
-                                            _deleteTransaction(index),
-                                      ),
-                                      // Checkbox for selecting the transaction for bulk delete
+                          return GestureDetector(
+                            onTap: _isSelecting
+                                ? () => _toggleSelection(index)
+                                : () => _showTransactionDetails(index),
+                            onLongPress:
+                                _toggleSelectionMode, // Enter selection mode on long press
+                            child: Card(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 16),
+                              elevation: 5,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Row(
+                                  children: [
+                                    if (_isSelecting)
                                       Checkbox(
                                         value: _selectedTransactions
                                             .contains(index),
                                         onChanged: (bool? value) {
-                                          setState(() {
-                                            if (value == true) {
-                                              _selectedTransactions.add(index);
-                                            } else {
-                                              _selectedTransactions
-                                                  .remove(index);
-                                            }
-                                          });
+                                          _toggleSelection(index);
                                         },
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                    Icon(_categoryIcons[
+                                            transaction['category']] ??
+                                        Icons.category),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            transaction['category'] ??
+                                                'Unknown',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                              'Type: ${transaction['type'] ?? 'Unknown'}, Amount: \$${transaction['amount'] ?? '0.00'}'),
+                                          Text(
+                                            DateFormat('dd-MM-yyyy').format(
+                                                DateTime.parse(
+                                                    transaction['date'])),
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
