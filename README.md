@@ -1,8 +1,9 @@
 # The expense_manager
 
-A new Flutter project.
+## A new Flutter project.
 
-Implemented fetaures:
+
+# Implemented fetaures:
 
 Add Export to CSV/Excel :white_check_mark:
 
