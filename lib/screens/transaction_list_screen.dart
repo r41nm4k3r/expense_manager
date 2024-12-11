@@ -285,6 +285,10 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         title: const Text('Transaction List'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: _showHelpDialog,
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
               setState(() {
@@ -398,6 +402,27 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showHelpDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('How to edit transactions'),
+          content: const Text(
+            'To edit a transaction, press on the entry you want to modify, hit edit, make the changes you like and press "Save Changes". After closing the popup window hit refresh on the upper right of the screen in order for the changes to appear.',
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
