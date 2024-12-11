@@ -201,6 +201,15 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         title: const Text('Transaction List'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              setState(() {
+                _isLoading = true;
+              });
+              _loadTransactions(); // Manually reload the transactions
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.file_download),
             onPressed: _exportTransactionsToCSV,
           ),
