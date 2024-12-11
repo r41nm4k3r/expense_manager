@@ -10,15 +10,23 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.account_balance_wallet,
-                size: 100, color: Colors.blue),
+            // Add your logo image here
+            Image.asset(
+              'assets/images/logo.png', // Update this with the correct path to your logo
+              width: 100, // Adjust the width as needed
+              height: 100, // Adjust the height as needed
+            ),
             const SizedBox(height: 20),
             const Text(
-              'Expense Manager',
+              'Expense Manager', // Your app title
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
+            const Text(
+              'Made by Nny', // Your app title
+              style: TextStyle(fontSize: 14),
+            ),
             const SizedBox(height: 10),
-            const CircularProgressIndicator(),
+            const CircularProgressIndicator(), // Loading indicator
           ],
         ),
       ),
