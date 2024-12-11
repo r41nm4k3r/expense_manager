@@ -44,6 +44,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   };
 
   DateTime? _selectedDate;
+  bool _isRecurring =
+      false; // New field to track if the transaction is recurring
+  String _recurrence = 'Daily'; // New field for recurrence type
+  final List<String> _recurrenceOptions = ['Daily', 'Weekly', 'Monthly'];
 
   @override
   void initState() {
@@ -58,6 +62,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           transaction['description'] ?? ''; // Load description
       _selectedDate =
           DateTime.tryParse(transaction['date'] ?? '') ?? DateTime.now();
+      _isRecurring = transaction['isRecurring'] ?? false; // Load recurring flag
+      _recurrence =
+          transaction['recurrence'] ?? 'Daily'; // Load recurrence type
     }
   }
 
@@ -87,6 +94,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       'description': description, // Save description
       'paymentMethod': _paymentMethod,
       'date': _selectedDate!.toIso8601String(),
+      'isRecurring': _isRecurring, // Save recurring flag
+      'recurrence': _recurrence, // Save recurrence type
     };
 
     final String? existingTransactions = prefs.getString('transactions');
@@ -263,6 +272,39 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ],
               ),
               const SizedBox(height: 16),
+              // Recurring transaction option
+              SwitchListTile(
+                title: const Text('Is this a recurring transaction?'),
+                value: _isRecurring,
+                onChanged: (value) {
+                  setState(() {
+                    _isRecurring = value;
+                  });
+                },
+              ),
+              if (_isRecurring) ...[
+                const SizedBox(height: 16),
+                const Text(
+                  'Recurrence',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                DropdownButton<String>(
+                  value: _recurrence,
+                  isExpanded: true,
+                  items: _recurrenceOptions.map((option) {
+                    return DropdownMenuItem(
+                      value: option,
+                      child: Text(option),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _recurrence = value!;
+                    });
+                  },
+                ),
+              ],
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _saveTransaction,
                 child: Text(widget.transaction != null
@@ -279,16 +321,16 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   void _showHelpDialog() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: const Text('Help'),
           content: const Text(
-            'To add or edit a transaction, fill in all fields, pick a date, and click "Save Transaction".',
-            textAlign: TextAlign.center,
-          ),
+              'In this screen, you can add or edit a transaction. If the transaction is recurring, you can specify how often it repeats (Daily, Weekly, Monthly).'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
               child: const Text('Close'),
             ),
           ],
