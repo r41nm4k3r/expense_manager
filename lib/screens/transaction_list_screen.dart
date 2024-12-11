@@ -235,7 +235,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Transaction Details'),
+          title: const Text('Transaction Details'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -243,14 +243,14 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
               Row(
                 children: [
                   Icon(icon),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
                     category,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('Type: $type'),
               Text('Amount: \$${amount}'),
               Text('Date: $formattedDate'),
@@ -262,15 +262,15 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
             TextButton(
               onPressed: () => _editTransaction(index),
-              child: Text('Edit'),
+              child: const Text('Edit'),
             ),
             TextButton(
               onPressed: () => _deleteTransaction(index),
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -355,30 +355,35 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                                           _toggleSelection(index);
                                         },
                                       ),
-                                    Icon(_categoryIcons[
-                                            transaction['category']] ??
-                                        Icons.category),
-                                    SizedBox(width: 8),
+                                    Icon(
+                                      _categoryIcons[transaction['category']] ??
+                                          Icons.category,
+                                    ),
+                                    const SizedBox(width: 16),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            transaction['category'] ??
-                                                'Unknown',
+                                            '${transaction['category']} - ${transaction['type']}',
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          Text(
-                                              'Type: ${transaction['type'] ?? 'Unknown'}, Amount: \$${transaction['amount'] ?? '0.00'}'),
+                                          Text('\$${transaction['amount']}'),
                                           Text(
                                             DateFormat('dd-MM-yyyy').format(
-                                                DateTime.parse(
-                                                    transaction['date'])),
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12),
+                                              DateTime.parse(
+                                                  transaction['date']),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          // Display description here
+                                          Text(
+                                            transaction['description'] ??
+                                                'No description',
+                                            style:
+                                                TextStyle(color: Colors.grey),
                                           ),
                                         ],
                                       ),
