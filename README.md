@@ -47,7 +47,7 @@ Add Splash screen with logo :white_check_mark:
     Why: Many users have recurring expenses, such as subscriptions, rent, or utilities.
     What to add: Allow users to create recurring transactions that automatically appear in their transaction list on specified dates.
 
-6. Currency Converter:
+6. Currency Converter: :white_check_mark:
 
     Why: If you want to support multiple currencies, it would be useful to include a currency converter that fetches live rates from a reliable source.
     What to add: Integrate an API for real-time currency conversion (such as CurrencyLayer or Open Exchange Rates).
