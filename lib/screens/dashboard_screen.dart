@@ -455,6 +455,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     .then((_) => _calculateTotals());
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.currency_exchange),
+              title: const Text('Currency Converter'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/currency-converter');
+              },
+            ),
             // Settings menu item
             ListTile(
               leading: const Icon(Icons.settings),

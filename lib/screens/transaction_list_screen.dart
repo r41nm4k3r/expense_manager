@@ -400,6 +400,35 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
                         },
                       ),
           ),
+          const SizedBox(height: 16), // Add some space before the footer
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Made with ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.flutter_dash,
+                    color: Colors.blue,
+                    size: 20,
+                  ),
+                  Text(
+                    ' and ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

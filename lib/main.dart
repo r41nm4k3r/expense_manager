@@ -1,3 +1,4 @@
+import 'package:expense_manager/screens/currency_converter_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expense_manager/screens/settings_screen.dart';
@@ -5,6 +6,7 @@ import './screens/dashboard_screen.dart';
 import './screens/add_transaction_screen.dart';
 import './screens/transaction_list_screen.dart';
 import './screens/splash_screen.dart'; // Import the Splash Screen
+import './screens/currency_converter_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -65,6 +67,7 @@ class _MyAppState extends State<MyApp> {
         '/add-transaction': (context) => const AddTransactionScreen(),
         '/transaction-list': (context) => const TransactionListScreen(),
         '/settings': (context) => const SettingsScreen(),
+        '/currency-converter': (context) => const CurrencyConverterPage(),
       },
     );
   }
