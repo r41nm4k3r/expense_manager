@@ -371,14 +371,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/add-transaction')
-                          .then((_) => _calculateTotals());
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Transaction'),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
                       Navigator.pushNamed(context, '/transaction-list')
                           .then((_) => _calculateTotals());
                     },
@@ -419,6 +411,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/add-transaction');
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

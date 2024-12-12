@@ -281,157 +281,163 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Transaction List'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            onPressed: _showHelpDialog,
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {
-                _isLoading = true;
-              });
-              _loadTransactions(); // Manually reload the transactions
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.file_download),
-            onPressed: _exportTransactionsToCSV,
-          ),
-          // Bulk delete button
-          if (_isSelecting) ...[
+        appBar: AppBar(
+          title: const Text('Transaction List'),
+          actions: [
             IconButton(
-              icon: const Icon(Icons.delete_forever),
-              onPressed: _selectedTransactions.isEmpty
-                  ? null
-                  : _bulkDeleteTransactions,
+              icon: const Icon(Icons.help_outline),
+              onPressed: _showHelpDialog,
             ),
             IconButton(
-              icon: const Icon(Icons.check_box_outline_blank),
+              icon: const Icon(Icons.refresh),
               onPressed: () {
                 setState(() {
-                  _selectedTransactions.clear();
+                  _isLoading = true;
                 });
+                _loadTransactions(); // Manually reload the transactions
               },
             ),
-          ] else ...[
             IconButton(
-              icon: const Icon(Icons.select_all),
-              onPressed: _toggleSelectionMode,
+              icon: const Icon(Icons.file_download),
+              onPressed: _exportTransactionsToCSV,
             ),
+            // Bulk delete button
+            if (_isSelecting) ...[
+              IconButton(
+                icon: const Icon(Icons.delete_forever),
+                onPressed: _selectedTransactions.isEmpty
+                    ? null
+                    : _bulkDeleteTransactions,
+              ),
+              IconButton(
+                icon: const Icon(Icons.check_box_outline_blank),
+                onPressed: () {
+                  setState(() {
+                    _selectedTransactions.clear();
+                  });
+                },
+              ),
+            ] else ...[
+              IconButton(
+                icon: const Icon(Icons.select_all),
+                onPressed: _toggleSelectionMode,
+              ),
+            ],
           ],
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _transactions.isEmpty
-                    ? const Center(child: Text('No transactions added yet!'))
-                    : ListView.builder(
-                        itemCount: _transactions.length,
-                        itemBuilder: (context, index) {
-                          final transaction = _transactions[index];
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _transactions.isEmpty
+                      ? const Center(child: Text('No transactions added yet!'))
+                      : ListView.builder(
+                          itemCount: _transactions.length,
+                          itemBuilder: (context, index) {
+                            final transaction = _transactions[index];
 
-                          return GestureDetector(
-                            onTap: _isSelecting
-                                ? () => _toggleSelection(index)
-                                : () => _showTransactionDetails(index),
-                            onLongPress:
-                                _toggleSelectionMode, // Enter selection mode on long press
-                            child: Card(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 16),
-                              elevation: 5,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    if (_isSelecting)
-                                      Checkbox(
-                                        value: _selectedTransactions
-                                            .contains(index),
-                                        onChanged: (bool? value) {
-                                          _toggleSelection(index);
-                                        },
+                            return GestureDetector(
+                              onTap: _isSelecting
+                                  ? () => _toggleSelection(index)
+                                  : () => _showTransactionDetails(index),
+                              onLongPress:
+                                  _toggleSelectionMode, // Enter selection mode on long press
+                              child: Card(
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 16),
+                                elevation: 5,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    children: [
+                                      if (_isSelecting)
+                                        Checkbox(
+                                          value: _selectedTransactions
+                                              .contains(index),
+                                          onChanged: (bool? value) {
+                                            _toggleSelection(index);
+                                          },
+                                        ),
+                                      Icon(
+                                        _categoryIcons[
+                                                transaction['category']] ??
+                                            Icons.category,
                                       ),
-                                    Icon(
-                                      _categoryIcons[transaction['category']] ??
-                                          Icons.category,
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${transaction['category']} - ${transaction['type']}',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text('\$${transaction['amount']}'),
-                                          Text(
-                                            DateFormat('dd-MM-yyyy').format(
-                                              DateTime.parse(
-                                                  transaction['date']),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${transaction['category']} - ${transaction['type']}',
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
                                             ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          // Display description here
-                                          Text(
-                                            transaction['description'] ??
-                                                'No description',
-                                            style: const TextStyle(
-                                                color: Colors.grey),
-                                          ),
-                                        ],
+                                            Text('\$${transaction['amount']}'),
+                                            Text(
+                                              DateFormat('dd-MM-yyyy').format(
+                                                DateTime.parse(
+                                                    transaction['date']),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            // Display description here
+                                            Text(
+                                              transaction['description'] ??
+                                                  'No description',
+                                              style: const TextStyle(
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-          ),
-          const SizedBox(height: 16), // Add some space before the footer
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Made with ',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.flutter_dash,
-                    color: Colors.blue,
-                    size: 20,
-                  ),
-                  Text(
-                    ' and ',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                    size: 20,
-                  ),
-                ],
+                            );
+                          },
+                        ),
+            ),
+            const SizedBox(height: 16), // Add some space before the footer
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Made with ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.flutter_dash,
+                      color: Colors.blue,
+                      size: 20,
+                    ),
+                    Text(
+                      ' and ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 20,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/add-transaction');
+          },
+          child: const Icon(Icons.add),
+        ));
   }
 
   void _showHelpDialog() {
