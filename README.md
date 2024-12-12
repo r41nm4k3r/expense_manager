@@ -42,7 +42,7 @@ Add Splash screen with logo :white_check_mark:
     Why: Give users insights into their spending habits with detailed reports and charts.
     What to add: Add a "Reports" screen where users can view detailed charts or graphs on their spending (e.g., Pie charts showing income vs. expenses over time, monthly spending breakdown, etc.).
 
-5. Recurring Transactions:
+5. Recurring Transactions: :white_check_mark:
 
     Why: Many users have recurring expenses, such as subscriptions, rent, or utilities.
     What to add: Allow users to create recurring transactions that automatically appear in their transaction list on specified dates.
