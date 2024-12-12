@@ -44,6 +44,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   };
 
   DateTime? _selectedDate;
+  bool _enableNotifications = false; // For notifications
   bool _isRecurring =
       false; // New field to track if the transaction is recurring
   String _recurrence = 'Daily'; // New field for recurrence type
@@ -63,6 +64,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _selectedDate =
           DateTime.tryParse(transaction['date'] ?? '') ?? DateTime.now();
       _isRecurring = transaction['isRecurring'] ?? false; // Load recurring flag
+      _enableNotifications =
+          transaction['enableNotifications'] ?? false; // Load notification flag
       _recurrence =
           transaction['recurrence'] ?? 'Daily'; // Load recurrence type
     }
@@ -96,6 +99,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       'date': _selectedDate!.toIso8601String(),
       'isRecurring': _isRecurring, // Save recurring flag
       'recurrence': _recurrence, // Save recurrence type
+      'enableNotifications': _enableNotifications, // Save notification flag
     };
 
     final String? existingTransactions = prefs.getString('transactions');
@@ -279,6 +283,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 onChanged: (value) {
                   setState(() {
                     _isRecurring = value;
+                    if (!_isRecurring) {
+                      _enableNotifications =
+                          false; // Reset notification flag if not recurring
+                    }
                   });
                 },
               ),
@@ -303,7 +311,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     });
                   },
                 ),
+                SwitchListTile(
+                  title: const Text('Enable Notifications'),
+                  value: _enableNotifications,
+                  onChanged: (value) {
+                    setState(() {
+                      _enableNotifications = value;
+                    });
+                  },
+                ),
               ],
+
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _saveTransaction,
