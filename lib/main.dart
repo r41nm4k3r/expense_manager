@@ -6,7 +6,6 @@ import './screens/dashboard_screen.dart';
 import './screens/add_transaction_screen.dart';
 import './screens/transaction_list_screen.dart';
 import './screens/splash_screen.dart'; // Import the Splash Screen
-import './screens/currency_converter_screen.dart';
 
 void main() {
   runApp(const MyApp());
