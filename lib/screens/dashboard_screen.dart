@@ -15,7 +15,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   double _totalIncome = 0.0;
   double _totalExpense = 0.0;
   final List<Map<String, dynamic>> _categories = [
-    {'name': 'Income', 'amount': 0.0, 'color': Colors.green},
+    {
+      'name': 'Income',
+      'amount': 0.0,
+      'color': Color.fromRGBO(82, 170, 94, 1.0)
+    },
     {'name': 'Expense', 'amount': 0.0, 'color': Colors.red},
   ];
   final List<Map<String, dynamic>> _categoryDetails = [
@@ -413,10 +417,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
+        tooltip: 'Increment',
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         onPressed: () {
           Navigator.pushNamed(context, '/add-transaction');
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white, size: 25),
       ),
     );
   }

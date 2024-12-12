@@ -433,10 +433,14 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
+          tooltip: 'Increment',
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
           onPressed: () {
             Navigator.pushNamed(context, '/add-transaction');
           },
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.add, color: Colors.white, size: 25),
         ));
   }
 
