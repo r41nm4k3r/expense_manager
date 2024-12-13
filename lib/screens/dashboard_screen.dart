@@ -344,7 +344,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             .then((_) => _calculateTotals());
                       },
                       icon: const Icon(Icons.analytics),
-                      label: const Text('View Reports'),
+                      label: const Text('Analysis & Prediction'),
                     ),
                     Container(height: 20.0), //SizedBox(height: 20.0),
                   ],
