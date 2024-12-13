@@ -112,6 +112,32 @@ class _ReportsScreenState extends State<ReportsScreen> {
               _buildMonthlyExpenseTrends(),
               const SizedBox(height: 16),
               _buildPredictedExpense(),
+              const SizedBox(height: 32),
+              Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Made with ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const Icon(
+                      Icons.flutter_dash,
+                      color: Colors.blue,
+                      size: 20,
+                    ),
+                    const Text(
+                      ' and ',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
