@@ -30,6 +30,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
   }
 
   void _loadData() async {
+    print("Monthly Expenses: $_monthlyExpenses");
+    print("Predicted Expense: $_predictedExpense");
     final prefs = await SharedPreferences.getInstance();
     final String? transactionsString = prefs.getString('transactions');
     List<dynamic> transactions =
@@ -66,9 +68,32 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   double _calculatePrediction() {
     if (_monthlyExpenses.isEmpty) return 0.0;
-    double total =
-        _monthlyExpenses.fold(0.0, (sum, entry) => sum + entry['amount']);
-    return total / _monthlyExpenses.length;
+
+    final List<double> expenses = [];
+    final List<int> months = [];
+
+    for (int i = 0; i < _monthlyExpenses.length; i++) {
+      expenses.add(_monthlyExpenses[i]['amount']);
+      months.add(i);
+    }
+
+    // Perform simple linear regression
+    double sumX = months.reduce((a, b) => a + b).toDouble();
+    double sumY = expenses.reduce((a, b) => a + b);
+    double sumXY = 0.0;
+    double sumX2 = 0.0;
+
+    for (int i = 0; i < months.length; i++) {
+      sumXY += months[i] * expenses[i];
+      sumX2 += months[i] * months[i];
+    }
+
+    double slope = (months.length * sumXY - sumX * sumY) /
+        (months.length * sumX2 - sumX * sumX);
+    double intercept = (sumY - slope * sumX) / months.length;
+
+    // Predict for the next month
+    return slope * months.length + intercept;
   }
 
   @override
@@ -85,8 +110,32 @@ class _ReportsScreenState extends State<ReportsScreen> {
               _buildExpenseBreakdownChart(),
               const SizedBox(height: 16),
               _buildMonthlyExpenseTrends(),
+              const SizedBox(height: 16),
+              _buildPredictedExpense(),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPredictedExpense() {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text(
+              'Predicted Expense for Next Month',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${_predictedExpense.toStringAsFixed(2)}',
+              style: const TextStyle(fontSize: 24, color: Colors.blue),
+            ),
+          ],
         ),
       ),
     );
