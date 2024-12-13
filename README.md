@@ -37,7 +37,7 @@ Add Splash screen with logo :white_check_mark:
     Why: Allow users to set budgets for different categories (like food, entertainment, etc.), and track if they are within budget.
     What to add: A budget management screen where users can set and track their spending limits. Add a visual progress bar or indicator to show how much of the budget has been used.
 
-4. Reports and Analytics:
+4. Reports and Analytics: :white_check_mark:
 
     Why: Give users insights into their spending habits with detailed reports and charts.
     What to add: Add a "Reports" screen where users can view detailed charts or graphs on their spending (e.g., Pie charts showing income vs. expenses over time, monthly spending breakdown, etc.).
@@ -82,12 +82,12 @@ Add Splash screen with logo :white_check_mark:
     Why: Remind users about upcoming bills, payment due dates, or budget limits.
     What to add: Set up push notifications to remind users when a transaction is due or if they are close to exceeding their budget.
 
-13. Export Data to Other Formats (Excel/Google Sheets):
+13. Export Data to Other Formats (Excel/Google Sheets): :white_check_mark:
 
     Why: CSV is useful, but many users prefer working with data in Excel or Google Sheets.
     What to add: Integrate features that allow users to export their data to Excel or directly sync with Google Sheets for cloud-based data management.
 
-14. Expense Prediction:
+14. Expense Prediction: :white_check_mark:
 
     Why: Help users predict their future expenses based on historical data.
     What to add: Implement predictive algorithms that analyze past spending trends and provide forecasts for upcoming expenses.
