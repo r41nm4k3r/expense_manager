@@ -5,6 +5,7 @@ import 'package:expense_manager/screens/settings_screen.dart';
 import './screens/dashboard_screen.dart';
 import './screens/add_transaction_screen.dart';
 import './screens/transaction_list_screen.dart';
+import './screens/reports_screen.dart';
 import './screens/splash_screen.dart'; // Import the Splash Screen
 
 void main() {
@@ -67,6 +68,7 @@ class _MyAppState extends State<MyApp> {
         '/transaction-list': (context) => const TransactionListScreen(),
         '/settings': (context) => const SettingsScreen(),
         '/currency-converter': (context) => const CurrencyConverterPage(),
+        '/reports': (context) => const ReportsScreen(),
       },
     );
   }

@@ -334,6 +334,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                 const SizedBox(height: 16),
                 // Other Dashboard Cards
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/reports')
+                            .then((_) => _calculateTotals());
+                      },
+                      icon: const Icon(Icons.analytics),
+                      label: const Text('View Reports'),
+                    ),
+                    Container(height: 20.0), //SizedBox(height: 20.0),
+                  ],
+                ),
                 const SizedBox(height: 16),
                 Card(
                   elevation: 4,
@@ -473,6 +488,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.pop(context); // Close the menu
                 Navigator.pushNamed(context, '/transaction-list')
                     .then((_) => _calculateTotals());
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.analytics),
+              title: const Text('Reports'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/reports');
               },
             ),
             ListTile(
