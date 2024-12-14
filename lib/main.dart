@@ -7,9 +7,21 @@ import './screens/add_transaction_screen.dart';
 import './screens/transaction_list_screen.dart';
 import './screens/reports_screen.dart';
 import './screens/splash_screen.dart'; // Import the Splash Screen
+import './screens/budget_screen.dart';
 
 void main() {
   runApp(const MyApp());
+}
+
+@override
+Widget build(BuildContext context) {
+  return MaterialApp(
+    title: 'Budget Tracker',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    home: const BudgetScreen(),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -69,6 +81,7 @@ class _MyAppState extends State<MyApp> {
         '/settings': (context) => const SettingsScreen(),
         '/currency-converter': (context) => const CurrencyConverterPage(),
         '/reports': (context) => const ReportsScreen(),
+        '/budget': (context) => const BudgetScreen(),
       },
     );
   }

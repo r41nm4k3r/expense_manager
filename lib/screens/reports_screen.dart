@@ -113,24 +113,24 @@ class _ReportsScreenState extends State<ReportsScreen> {
               const SizedBox(height: 16),
               _buildPredictedExpense(),
               const SizedBox(height: 32),
-              Center(
+              const Center(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    Text(
                       'Made with ',
                       style: TextStyle(fontSize: 16),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.flutter_dash,
                       color: Colors.blue,
                       size: 20,
                     ),
-                    const Text(
+                    Text(
                       ' and ',
                       style: TextStyle(fontSize: 16),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.favorite,
                       color: Colors.red,
                       size: 20,
@@ -158,7 +158,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              '${_predictedExpense.toStringAsFixed(2)}',
+              _predictedExpense.toStringAsFixed(2),
               style: const TextStyle(fontSize: 24, color: Colors.blue),
             ),
           ],
@@ -305,14 +305,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
               height: 200, // Explicit height constraint
               child: LineChart(
                 LineChartData(
-                  gridData: FlGridData(show: true),
+                  gridData: const FlGridData(show: true),
                   borderData: FlBorderData(
                     border: const Border(
                       left: BorderSide(),
                       bottom: BorderSide(),
                     ),
                   ),
-                  titlesData: FlTitlesData(show: true),
+                  titlesData: const FlTitlesData(show: true),
                   lineBarsData: [
                     LineChartBarData(
                       spots: _monthlyExpenses

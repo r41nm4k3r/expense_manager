@@ -18,7 +18,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     {
       'name': 'Income',
       'amount': 0.0,
-      'color': Color.fromRGBO(82, 170, 94, 1.0)
+      'color': const Color.fromRGBO(82, 170, 94, 1.0)
     },
     {'name': 'Expense', 'amount': 0.0, 'color': Colors.red},
   ];
@@ -386,7 +386,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     // ElevatedButton.icon(
@@ -496,6 +496,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onTap: () {
                 Navigator.pop(context); // Close the menu
                 Navigator.pushNamed(context, '/reports');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.wallet),
+              title: const Text('Budget'),
+              onTap: () {
+                Navigator.pop(context); // Close the menu
+                Navigator.pushNamed(context, '/budget');
               },
             ),
             ListTile(

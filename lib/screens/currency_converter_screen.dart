@@ -42,29 +42,29 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Currency Converter'),
+        title: const Text('Currency Converter'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.currency_exchange,
               color: Colors.orange,
               size: 80,
             ),
-            SizedBox(height: 150),
+            const SizedBox(height: 150),
             // Amount input
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter amount',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // From Currency Dropdown
             DropdownButton<String>(
@@ -82,7 +82,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                 });
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // To Currency Dropdown
             DropdownButton<String>(
@@ -100,20 +100,20 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                 });
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Convert button
             ElevatedButton(
               onPressed: fetchConversionRate,
-              child: Text('Convert'),
+              child: const Text('Convert'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Display the converted amount
             if (convertedAmount.isNotEmpty)
               Text(
                 '${amountController.text} $fromCurrency = $convertedAmount $toCurrency',
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
             const SizedBox(height: 16), // Add some space before the footer
             const Padding(
